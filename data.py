@@ -2,6 +2,12 @@
 import os, re, time, threading, datetime as dt
 from collections import defaultdict
 import requests
+try:
+    import orjson
+    _loads = orjson.loads
+except ImportError:  # pragma: no cover
+    import json
+    _loads = json.loads
 from concurrent.futures import ThreadPoolExecutor
 
 TOKEN = os.environ.get("MOYSKLAD_TOKEN", "")
@@ -15,8 +21,8 @@ EXCLUDE_WORDS = re.compile(os.environ.get(
 TAG_SELLER = {"ulugbek": "Ulug'bek", "saidmalik": "Saidmalik", "islomxon": "Islomxon",
               "akramjon": "Akram", "ma'rufxon": "Marufxon", "abdulbosit": "Abbosxon"}
 
-DEM_DAYS = int(os.environ.get("DEM_DAYS", "150"))     # muddat sanalarini qidirish uchun necha kunlik otgruzka
-PAY_DAYS = int(os.environ.get("PAY_DAYS", "150"))     # kalendarda ko'rinadigan tushumlar (necha kun orqaga)
+DEM_DAYS = int(os.environ.get("DEM_DAYS", "100"))     # muddat sanalarini qidirish uchun necha kunlik otgruzka
+PAY_DAYS = int(os.environ.get("PAY_DAYS", "75"))     # kalendarda ko'rinadigan tushumlar (necha kun orqaga)
 
 S = requests.Session()
 S.headers.update({"Authorization": "Bearer " + TOKEN, "Accept-Encoding": "gzip"})
@@ -28,7 +34,7 @@ def _get(path, params=None):
             r = S.get(B + path, params=params, timeout=90)
             if r.status_code == 429:
                 time.sleep(2 + i * 2); continue
-            r.raise_for_status(); return r.json()
+            r.raise_for_status(); return _loads(r.content)
         except requests.RequestException:
             if i == 4: raise
             time.sleep(3)
@@ -92,6 +98,10 @@ def parse_due(text, ship_day):
     return best.isoformat() if best else None
 
 
+def log(msg):
+    print(dt.datetime.now(TZ).strftime("%H:%M:%S"), "[nasiya]", msg, flush=True)
+
+
 class Store:
     def __init__(self):
         self.lock = threading.Lock()
@@ -105,16 +115,22 @@ class Store:
 
     # ---------- yuklash ----------
     def full_load(self):
+        log("yuklash boshlandi")
         self.emps = {_id(e): e["name"] for e in _all("entity/employee", {})}
         self.cps = {c["id"]: c for c in _all("entity/counterparty", {}, slim_cp)}
-        self.suppliers = set(_all("entity/supply", {"filter": "moment>=" + _since(400)},
+        self.suppliers = set(_all("entity/supply", {"filter": "moment>=" + _since(int(os.environ.get("SUP_DAYS", "500")))},
                                   lambda s: _id(s["agent"])))
+        log(f"kontragentlar {len(self.cps)}, postavshiklar {len(self.suppliers)}")
         self.demands = {d["id"]: d for d in _all("entity/demand", {"filter": "moment>=" + _since(DEM_DAYS)}, slim_doc)}
+        log(f"otgruzkalar {len(self.demands)}")
+        # qarzlar tayyor — tushumlarni kutmasdan sahifani ko'rsatamiz
+        self._publish_balance()
         pays = {}
         for kind in ("paymentin", "cashin"):
             for p in _all("entity/" + kind, {"filter": "moment>=" + _since(PAY_DAYS)}, slim_doc):
                 pays[p["id"]] = p
         self.pays = pays
+        log(f"to'lovlar {len(self.pays)}")
         self._last_full = time.time()
 
     def delta_load(self, mark):
@@ -125,6 +141,14 @@ class Store:
         for c in _all("entity/counterparty", {"filter": f}, slim_cp): self.cps[c["id"]] = c
         # o'chirilganlarni tozalash uchun kunda bir marta to'liq yuklash
         if time.time() - self._last_full > 6 * 3600: self.full_load()
+
+    def _publish_balance(self):
+        self.balance = {_id(r["counterparty"]): -r["balance"] / 100
+                        for r in _all("report/counterparty", {}) if r.get("balance", 0) < 0}
+        view = self.compute()
+        with self.lock:
+            self.view = view; self.ready = True
+            self.updated = dt.datetime.now(TZ).strftime("%H:%M") + " (tushumlar yuklanmoqda)"
 
     def refresh(self):
         mark = (dt.datetime.now(TZ) - dt.timedelta(minutes=10)).strftime("%Y-%m-%d %H:%M:%S")
@@ -226,6 +250,7 @@ def loop():
         try: STORE.refresh()
         except Exception as e:
             STORE.error = str(e)[:300]
+            log("XATO: " + STORE.error)
         time.sleep(int(os.environ.get("REFRESH_SECONDS", "300")))
 
 
