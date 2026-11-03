@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: spark-nasiya
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app --workers 1 --threads 4 --timeout 120
+    envVars:
+      - key: MOYSKLAD_TOKEN
+        sync: false
+      - key: APP_PASSWORD
+        sync: false
+      - key: PYTHON_VERSION
+        value: 3.12.4
