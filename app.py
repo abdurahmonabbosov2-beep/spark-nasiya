@@ -8,6 +8,9 @@ PASSWORD = os.environ.get("APP_PASSWORD", "")
 
 @app.before_request
 def auth():
+    # Render gunicorn'ni --preload bilan ishga tushiradi: fon oqimi aynan
+    # so'rovga javob beradigan jarayonda ishga tushishi uchun shu yerda boshlaymiz
+    data.start()
     if not PASSWORD or request.path == "/health":
         return
     a = request.authorization
@@ -33,8 +36,6 @@ def api():
 def health():
     return "ok"
 
-
-data.start()
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8000)))

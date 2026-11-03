@@ -254,5 +254,17 @@ def loop():
         time.sleep(int(os.environ.get("REFRESH_SECONDS", "300")))
 
 
+_started_pid = None
+_start_lock = threading.Lock()
+
+
 def start():
-    threading.Thread(target=loop, daemon=True).start()
+    """Har bir jarayonda faqat bir marta fon yangilanishini ishga tushiradi."""
+    global _started_pid
+    if _started_pid == os.getpid():
+        return
+    with _start_lock:
+        if _started_pid == os.getpid():
+            return
+        _started_pid = os.getpid()
+        threading.Thread(target=loop, daemon=True).start()
