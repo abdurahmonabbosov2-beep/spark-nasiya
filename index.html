@@ -3,254 +3,257 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Spark Plus · Nasiya</title>
+<title>Spark Plus nasiya</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-:root{--acc:#1E3A8A;--bg:#F5F6F8;--card:#fff;--line:#E5E7EB;--ink:#111827;--mute:#4B5563;
---red:#B42318;--redbg:#FEE4E2;--amb:#B54708;--ambbg:#FEF0C7;--blue:#1D4ED8;--bluebg:#DBEAFE;--grey:#344054;--greybg:#F2F4F7;--green:#067647;--greenbg:#DCFAE6}
+:root{
+  --bg:#E9EDF1; --paper:#FFFFFF; --ink:#182635; --muted:#5D6B7A; --line:#D3DAE1;
+  --spark:#F2B705;
+  --s-over:#C2362B; --s-today:#E0761A; --s-soon:#D9A400; --s-week:#2F6DB0; --s-later:#2C8A57; --s-none:#8A96A3;
+}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);font-family:Inter,system-ui,sans-serif;color:var(--ink);font-size:14px}
-a{color:var(--acc)}
-header{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
-.hw{max-width:1240px;margin:0 auto;padding:12px 20px;display:flex;flex-wrap:wrap;align-items:center;gap:12px 24px}
-.logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px}
-.logo b{width:36px;height:36px;border-radius:8px;background:var(--acc);color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px}
-nav{display:flex;flex-wrap:wrap;gap:4px}
-nav a{padding:9px 13px;border-radius:8px;color:#374151;text-decoration:none}
-nav a.on{background:#EEF2FF;color:var(--acc);font-weight:600}
-.live{margin-left:auto;font-size:13px;color:var(--mute);display:flex;align-items:center;gap:6px}
-.dot{width:8px;height:8px;border-radius:50%;background:#12B76A}
-main{max-width:1240px;margin:0 auto;padding:24px 20px 48px;display:flex;flex-direction:column;gap:22px}
-h1{margin:0;font-size:26px}
-h2{margin:0;font-size:17px}
-.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px}
-.k .l{font-size:13px;color:var(--mute);font-weight:500}
-.k .v{font-size:25px;font-weight:700;margin-top:6px}
-.k .s{font-size:13px;color:var(--mute);margin-top:4px}
-.panel{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden}
-.ph{padding:14px 18px;border-bottom:1px solid var(--line);display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
-.tw{overflow-x:auto}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Golos Text",system-ui,sans-serif;font-size:15px;line-height:1.45;font-variant-numeric:tabular-nums}
+button{font:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--spark);outline-offset:2px}
+.wrap{max-width:1180px;margin:0 auto;padding:20px 20px 60px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.brand{font-weight:800;font-size:20px;letter-spacing:-.01em}
+.brand span{display:inline-block;width:10px;height:10px;background:var(--spark);border-radius:2px;margin-right:8px;transform:rotate(45deg)}
+.upd{color:var(--muted);font-size:13px}
+.btn{background:var(--ink);color:#fff;border:0;border-radius:8px;padding:8px 14px;font-weight:600}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+
+/* Asosiy blok: umumiy qarz va holat chizig'i */
+.hero{margin:22px 0 28px}
+.hero .lbl{color:var(--muted);font-size:14px}
+.hero .total{font-size:clamp(34px,6vw,58px);font-weight:800;letter-spacing:-.03em;line-height:1.05}
+.hero .total small{font-size:.4em;font-weight:600;color:var(--muted);margin-left:6px}
+.strip{display:flex;height:22px;border-radius:6px;overflow:hidden;margin-top:16px;background:var(--line)}
+.strip div{height:100%}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:10px;font-size:13px}
+.legend button{background:none;border:0;padding:2px 0;color:var(--ink);display:flex;align-items:center;gap:6px}
+.legend button.off{opacity:.35}
+.dot{width:10px;height:10px;border-radius:50%;display:inline-block;flex:none}
+
+nav.tabs{display:flex;gap:4px;border-bottom:2px solid var(--line);margin-bottom:18px;overflow-x:auto}
+nav.tabs button{background:none;border:0;padding:10px 14px;font-weight:600;color:var(--muted);border-bottom:3px solid transparent;margin-bottom:-2px;white-space:nowrap}
+nav.tabs button[aria-selected=true]{color:var(--ink);border-color:var(--ink)}
+
+.panel{background:var(--paper);border-radius:10px;padding:18px}
 table{width:100%;border-collapse:collapse}
-th{text-align:left;font-size:12px;color:var(--mute);font-weight:600;padding:10px 18px;background:#F9FAFB;border-bottom:1px solid var(--line);white-space:nowrap}
-td{padding:11px 18px;border-bottom:1px solid #F0F1F3;vertical-align:top}
-td.n,th.n{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
-tr.click{cursor:pointer} tr.click:hover td{background:#F9FAFB}
-.pill{display:inline-block;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap}
-.over{background:var(--redbg);color:var(--red)} .today{background:var(--ambbg);color:var(--amb)}
-.tom{background:var(--bluebg);color:var(--blue)} .later{background:var(--greybg);color:var(--grey)}
-.none{background:#fff;color:var(--mute);border:1px dashed #D0D5DD} .ok{background:var(--greenbg);color:var(--green)}
-.sub{font-size:12px;color:var(--mute)}
-.sellers{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
-.seller{cursor:pointer;display:flex;gap:14px;align-items:center}
-.seller:hover{border-color:var(--acc)}
-.bar{height:8px;border-radius:99px;background:#EEF0F3;display:flex;overflow:hidden;margin-top:8px}
-.bar i{display:block;height:100%}
-.chips{display:flex;flex-wrap:wrap;gap:6px}
-.chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:7px 12px;cursor:pointer;font:inherit;font-size:13px}
-.chip.on{background:var(--acc);color:#fff;border-color:var(--acc)}
-input,select{font:inherit;padding:8px 11px;border:1px solid #D0D5DD;border-radius:8px;background:#fff}
-button.nav{font:inherit;border:1px solid var(--line);background:#fff;border-radius:8px;padding:7px 12px;cursor:pointer}
-.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
-.cal .wd{font-size:12px;color:var(--mute);font-weight:600;text-align:center;padding:4px}
-.day{background:#fff;border:1px solid var(--line);border-radius:10px;min-height:96px;padding:8px;cursor:pointer;display:flex;flex-direction:column;gap:3px;text-align:left;font:inherit}
-.day:hover{border-color:var(--acc)} .day.sel{outline:2px solid var(--acc)} .day.td{background:#EEF2FF}
-.day.out{visibility:hidden}
-.day .dn{font-weight:700} .day .in{font-size:12px;color:var(--green);font-weight:600} .day .du{font-size:12px;color:var(--amb);font-weight:600}
-.day.miss .du{color:var(--red)}
-.split{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(300px,1fr);gap:18px;align-items:start}
-@media(max-width:900px){.split{grid-template-columns:1fr}.day{min-height:70px}.day .in,.day .du{font-size:10px}}
-.crumbs{font-size:13px;color:var(--mute)}
-.hint{background:#FFFAEB;border:1px solid #FEDF89;color:#93370D;border-radius:10px;padding:12px 16px;font-size:13px}
-.docs td{background:#FAFAFB;font-size:13px;padding:8px 18px}
-.center{padding:60px;text-align:center;color:var(--mute)}
-:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+th{text-align:left;font-size:12px;color:var(--muted);font-weight:600;padding:8px 10px;border-bottom:1px solid var(--line)}
+td{padding:10px;border-bottom:1px solid #EEF1F4;vertical-align:top}
+td.n,th.n{text-align:right;white-space:nowrap}
+tr.click{cursor:pointer}
+tr.click:hover td{background:#F5F7F9}
+.tscroll{overflow-x:auto}
+
+.sellers{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px}
+.seller{background:var(--paper);border-radius:10px;padding:16px;border:1px solid transparent;text-align:left;color:var(--ink);display:grid;grid-template-columns:86px 1fr;gap:14px;align-items:center}
+.seller:hover{border-color:var(--ink)}
+.donut{width:86px;height:86px;border-radius:50%;position:relative}
+.donut::after{content:"";position:absolute;inset:16px;background:var(--paper);border-radius:50%}
+.seller h3{margin:0 0 2px;font-size:16px}
+.seller .amt{font-weight:700;font-size:18px}
+.seller .meta{color:var(--muted);font-size:13px}
+.prog{height:6px;background:var(--line);border-radius:3px;margin-top:8px;overflow:hidden}
+.prog div{height:100%;background:var(--ink)}
+
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;padding:2px 9px;border-radius:20px;color:#fff;white-space:nowrap}
+.search{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font:inherit;margin-bottom:12px;background:#fff}
+
+.cal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.cal-head h3{margin:0;font-size:18px}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.cal .wd{font-size:12px;color:var(--muted);text-align:center;padding:4px}
+.day{background:#F5F7F9;border:1px solid transparent;border-radius:8px;min-height:78px;padding:6px;text-align:left;color:var(--ink);display:flex;flex-direction:column;gap:2px;font-size:12px}
+.day:hover{border-color:var(--ink)}
+.day .d{font-weight:700;font-size:14px}
+.day.today{background:#FFF4CC;border-color:var(--spark)}
+.day.empty{visibility:hidden}
+.day .k{color:var(--muted)}
+.day .ok{color:var(--s-later);font-weight:600}
+.day .bad{color:var(--s-over);font-weight:600}
+
+.detail{margin-top:16px}
+.detail h3{margin:0 0 4px}
+.err{background:#FBE9E7;color:var(--s-over);padding:12px 14px;border-radius:8px;margin:16px 0}
+.empty-msg{color:var(--muted);padding:20px 0}
+@media (max-width:640px){ .day{min-height:58px;font-size:10px} .day .d{font-size:12px} .seller{grid-template-columns:64px 1fr} .donut{width:64px;height:64px} .donut::after{inset:12px} }
+@media (prefers-reduced-motion:no-preference){ .strip div{transition:width .5s ease} }
 </style>
 </head>
 <body>
-<header><div class="hw">
-  <div class="logo"><b>SP</b>Spark Plus · Nasiya</div>
-  <nav id="nav">
-    <a href="#home" data-p="home">Bosh sahifa</a>
-    <a href="#sellers" data-p="sellers">Sotuvchilar</a>
-    <a href="#calendar" data-p="calendar">Kalendar</a>
-    <a href="#report" data-p="report">Kunlik hisobot</a>
+<div class="wrap">
+  <header>
+    <div class="brand"><span></span>Spark Plus nasiya</div>
+    <div style="display:flex;gap:10px;align-items:center">
+      <span class="upd" id="upd">Yuklanmoqda…</span>
+      <button class="btn ghost" id="refresh">Yangilash</button>
+    </div>
+  </header>
+  <div id="error"></div>
+
+  <section class="hero">
+    <div class="lbl">Mijozlarning umumiy qarzi</div>
+    <div class="total" id="total">—</div>
+    <div class="strip" id="strip"></div>
+    <div class="legend" id="legend"></div>
+  </section>
+
+  <nav class="tabs" role="tablist">
+    <button role="tab" data-tab="report" aria-selected="true">Bugungi hisobot</button>
+    <button role="tab" data-tab="sellers" aria-selected="false">Sotuvchilar</button>
+    <button role="tab" data-tab="all" aria-selected="false">Barcha qarzdorlar</button>
+    <button role="tab" data-tab="cal" aria-selected="false">Kalendar</button>
   </nav>
-  <div class="live"><span class="dot" id="dot"></span><span id="upd">Yuklanmoqda…</span></div>
-</div></header>
-<main id="app"><div class="center">MoySklad'dan ma'lumot olinmoqda. Birinchi marta 2–4 daqiqa ketadi…</div></main>
+  <main id="view"></main>
+</div>
 
 <script>
-const OY=['yanvar','fevral','mart','aprel','may','iyun','iyul','avgust','sentabr','oktabr','noyabr','dekabr'];
-const HAF=['Du','Se','Ch','Pa','Ju','Sh','Ya'];
-let D=null, calMonth=null, calSel=null, sellerFilter='all', search='', openRow=null, repDate=null;
-const $=s=>document.querySelector(s);
-const fmt=n=>Math.round(n||0).toString().replace(/\B(?=(\d{3})+(?!\d))/g,' ');
-const esc=s=>(s??'').toString().replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const addDays=(iso,n)=>{const d=new Date(iso+'T00:00:00');d.setDate(d.getDate()+n);return d.toISOString().slice(0,10)};
-const human=iso=>{if(!iso)return '—';const[y,m,d]=iso.split('-');return `${+d}-${OY[m-1]}`};
-const mln=n=>n>=1e6?(n/1e6).toFixed(1).replace('.',',')+' mln':fmt(n);
-const short=iso=>iso?iso.slice(8,10)+'.'+iso.slice(5,7):'—';
-const diff=(a,b)=>Math.round((new Date(a)-new Date(b))/864e5);
+const ST = [
+  {k:'over',  t:"Muddati o'tgan",     c:'var(--s-over)'},
+  {k:'today', t:'Bugun',              c:'var(--s-today)'},
+  {k:'soon',  t:'1–3 kun qoldi',      c:'var(--s-soon)'},
+  {k:'week',  t:'4–7 kun qoldi',      c:'var(--s-week)'},
+  {k:'later', t:'8+ kun qoldi',       c:'var(--s-later)'},
+  {k:'none',  t:'Muddat yozilmagan',  c:'var(--s-none)'},
+];
+const stOf = d => d.daysLeft===null?'none':d.daysLeft<0?'over':d.daysLeft===0?'today':d.daysLeft<=3?'soon':d.daysLeft<=7?'week':'later';
+const stInfo = k => ST.find(s=>s.k===k);
+const fmt = n => Math.round(n).toLocaleString('ru-RU').replace(/\u00a0/g,' ');
+const som = n => fmt(n)+" so'm";
+const esc = s => String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const dmy = s => s ? s.slice(8,10)+'.'+s.slice(5,7)+'.'+s.slice(0,4) : '—';
+const addDays = (s,n) => { const d=new Date(s+'T00:00:00Z'); d.setUTCDate(d.getUTCDate()+n); return d.toISOString().slice(0,10); };
 
-function status(due){
-  if(!due) return {k:'none',t:'Muddat yozilmagan'};
-  const d=diff(due,D.today);
-  if(d<0) return {k:'over',t:`${-d} kun o'tdi`};
-  if(d===0) return {k:'today',t:'Bugun'};
-  if(d===1) return {k:'tom',t:'Ertaga'};
-  return {k:'later',t:`${d} kun qoldi`};
-}
-function docsOf(cs){return cs.flatMap(c=>c.docs.map(x=>({...x,client:c.name,seller:c.seller,phone:c.phone,cid:c.id})))}
-function split(cs){
-  const r={over:0,today:0,tom:0,later:0,none:0};
-  docsOf(cs).forEach(x=>r[status(x.due).k]+=x.amount);return r;
-}
-// kun bo'yicha: kelishi kerak / keldi (sotuvchi bo'yicha)
-function dayPlan(iso,seller){
-  const day=D.days[iso]; if(!day) return {need:0,got:0,items:[]};
-  let items=day.items.filter(i=>!seller||i.seller===seller);
-  const per={}; items.forEach(i=>{per[i.cid]=per[i.cid]||{need:0,paid:i.paid_that_day};per[i.cid].need+=i.amount});
-  let need=0,got=0; Object.values(per).forEach(p=>{need+=p.need;got+=Math.min(p.need,p.paid)});
-  return {need,got,items};
-}
-function rate(seller,days=30){
-  let n=0,g=0; for(let i=1;i<=days;i++){const p=dayPlan(addDays(D.today,-i),seller);n+=p.need;g+=p.got}
-  return n?g/n:null;
-}
-const COL={over:'#D92D20',today:'#F79009',tom:'#2E90FA',later:'#98A2B3',none:'#E4E7EC'};
-function donut(s,size=96){
-  const tot=Object.values(s).reduce((a,b)=>a+b,0)||1; let a=0; const r=size/2-8, C=2*Math.PI*r;
-  const seg=Object.entries(s).map(([k,v])=>{const l=v/tot*C;const el=`<circle r="${r}" cx="${size/2}" cy="${size/2}" fill="none" stroke="${COL[k]}" stroke-width="14" stroke-dasharray="${l} ${C-l}" stroke-dashoffset="${-a}"/>`;a+=l;return el}).join('');
-  const pct=Math.round(s.over/tot*100);
-  return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" role="img" aria-label="Muddati o'tgan ${pct}%"><g transform="rotate(-90 ${size/2} ${size/2})">${seg}</g><text x="50%" y="48%" text-anchor="middle" font-size="16" font-weight="700" fill="#B42318">${pct}%</text><text x="50%" y="66%" text-anchor="middle" font-size="10" fill="#4B5563">o'tgan</text></svg>`;
-}
-function legend(s){const nm={over:"Muddati o'tgan",today:'Bugun',tom:'Ertaga',later:'Keyinroq',none:'Muddat yozilmagan'};
-  return `<div style="display:grid;gap:6px;font-size:13px">${Object.entries(s).map(([k,v])=>`<div style="display:flex;gap:8px;align-items:center"><i style="width:10px;height:10px;border-radius:3px;background:${COL[k]}"></i>${nm[k]}<b style="margin-left:auto">${fmt(v)}</b></div>`).join('')}</div>`}
-function bar(s){const t=Object.values(s).reduce((a,b)=>a+b,0)||1;return `<div class="bar">${Object.entries(s).map(([k,v])=>`<i style="width:${v/t*100}%;background:${COL[k]}"></i>`).join('')}</div>`}
-const kpi=(l,v,s,c='')=>`<div class="card k"><div class="l" style="${c?'color:'+c:''}">${l}</div><div class="v" style="${c?'color:'+c:''}">${v}</div><div class="s">${s}</div></div>`;
-function sellersList(){const m={};D.customers.forEach(c=>{(m[c.seller]=m[c.seller]||[]).push(c)});return Object.entries(m).sort((a,b)=>b[1].reduce((s,c)=>s+c.debt,0)-a[1].reduce((s,c)=>s+c.debt,0))}
+let D=null, tab='report', hidden=new Set(), selSeller=null, calMonth=null, selDay=null, q='';
 
-// ---------- sahifalar ----------
-function home(){
-  const cs=D.customers, tot=cs.reduce((a,c)=>a+c.debt,0), s=split(cs);
-  const docs=docsOf(cs), overDocs=docs.filter(x=>status(x.due).k==='over').sort((a,b)=>a.due.localeCompare(b.due));
-  const overCl=new Set(overDocs.map(x=>x.cid)).size;
-  const tp=dayPlan(D.today), tm=dayPlan(addDays(D.today,1));
-  const inc=(D.days[D.today]||{}).income||0;
-  return `<div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:8px"><h1>Bugun, ${human(D.today)}</h1><span class="sub">Bugungi jami tushum: <b style="color:var(--green)">${fmt(inc)}</b></span></div>
-  <section class="kpis">
-   ${kpi('Jami nasiya qarzi',fmt(tot),cs.length+' ta mijoz')}
-   ${kpi("Muddati o'tgan",fmt(s.over),overCl+' ta mijoz','#B42318')}
-   ${kpi('Bugun kelishi kerak',fmt(tp.need),`Keldi: ${fmt(tp.got)}${tp.need?' ('+Math.round(tp.got/tp.need*100)+'%)':''}`,'#B54708')}
-   ${kpi('Ertaga keladi',fmt(tm.need),new Set(tm.items.map(i=>i.cid)).size+' ta mijoz','#1D4ED8')}
-   ${kpi('Muddat yozilmagan',fmt(s.none),'izohga sana yozilmagan qarz')}
-  </section>
-  ${s.none>tot*0.3?`<div class="hint">Qarzning ${Math.round(s.none/tot*100)}% qismiga muddat yozilmagan. Sotuvchilar otgruzka izohiga sanani <b>15.11</b> shaklida yozsa, bu qarzlar ham kalendarga tushadi.</div>`:''}
-  <section class="panel"><div class="ph"><h2>Diqqat: muddati o'tgan qarzlar</h2><span class="sub">${overDocs.length} ta otgruzka</span></div>
-   <div class="tw"><table><thead><tr><th>Mijoz</th><th>Sotuvchi</th><th>Otgruzka</th><th>Muddat</th><th>Kechikish</th><th class="n">Summa</th></tr></thead><tbody>
-   ${overDocs.slice(0,40).map(x=>`<tr><td>${esc(x.client)}<div class="sub">${esc(x.phone)}</div></td><td>${esc(x.seller)}</td><td>№ ${esc(x.doc)} · ${short(x.ship)}</td><td>${short(x.due)}</td><td><span class="pill over">${status(x.due).t}</span></td><td class="n"><b>${fmt(x.amount)}</b></td></tr>`).join('')||'<tr><td colspan="6" class="sub">Muddati o\'tgan qarz yo\'q</td></tr>'}
-   </tbody></table></div></section>
-  <section><h2 style="margin-bottom:12px">Sotuvchilar</h2><div class="sellers">${sellerCards()}</div></section>`;
-}
-function sellerCards(){
-  return sellersList().map(([n,cs])=>{const s=split(cs),t=cs.reduce((a,c)=>a+c.debt,0),p=dayPlan(D.today,n);
-   return `<div class="card seller" tabindex="0" onclick="go('seller',${esc(JSON.stringify(n))})" onkeydown="if(event.key==='Enter')this.click()">
-   ${donut(s,84)}<div style="flex:1;min-width:0"><div style="font-weight:700;font-size:16px">${esc(n)}</div><div class="sub">${cs.length} mijoz · ${fmt(t)}</div>
-   <div style="font-size:13px;margin-top:6px;color:var(--red)">Muddati o'tgan: ${fmt(s.over)}</div>
-   <div style="font-size:13px;color:var(--mute)">Bugun: ${fmt(p.got)} / ${fmt(p.need)}</div>${bar(s)}</div></div>`}).join('');
-}
-function sellersPage(){return `<h1>Sotuvchilar</h1><div class="sellers">${sellerCards()}</div>`}
-function sellerPage(name){
-  const cs=D.customers.filter(c=>c.seller===name), s=split(cs), t=cs.reduce((a,c)=>a+c.debt,0);
-  const tp=dayPlan(D.today,name), tm=dayPlan(addDays(D.today,1),name);
-  let week=0; for(let i=0;i<7;i++) week+=dayPlan(addDays(D.today,i),name).need;
-  const r=rate(name);
-  const rows=cs.map(c=>({...c,st:status(c.due)})).filter(c=>(sellerFilter==='all'||c.st.k===sellerFilter)&&(!search||c.name.toLowerCase().includes(search.toLowerCase())))
-    .sort((a,b)=>({over:0,today:1,tom:2,later:3,none:4}[a.st.k]-{over:0,today:1,tom:2,later:3,none:4}[b.st.k])||(a.due||'').localeCompare(b.due||'')||b.debt-a.debt);
-  const defs=[['all','Hammasi'],['over',"Muddati o'tgan"],['today','Bugun'],['tom','Ertaga'],['later','Keyinroq'],['none','Muddatsiz']];
-  return `<div class="crumbs"><a href="#sellers">Sotuvchilar</a> / ${esc(name)}</div>
-  <h1>${esc(name)} <span class="sub" style="font-weight:400">· ${cs.length} ta qarzdor mijoz</span></h1>
-  <section class="kpis">${kpi('Jami qarz',fmt(t),'')}${kpi("Muddati o'tgan",fmt(s.over),'','#B42318')}${kpi('Bugun kelishi kerak',fmt(tp.need),'Keldi: '+fmt(tp.got),'#B54708')}${kpi('Ertaga',fmt(tm.need),'','#1D4ED8')}</section>
-  <section class="card" style="display:flex;flex-wrap:wrap;gap:24px;align-items:center">${donut(s,130)}<div style="min-width:240px">${legend(s)}</div>
-   <div style="flex:1;min-width:220px;font-size:14px;line-height:1.6">Bu hafta <b>${fmt(week)}</b> kelishi kerak.${r!==null?` Oxirgi 30 kunda muddatli qarzlarning <b>${Math.round(r*100)}%</b> i vaqtida keldi, demak taxminan <b>${fmt(week*r)}</b> keladi.`:' Prognoz uchun hali muddatli qarzlar yetarli emas.'}</div></section>
-  <section class="panel"><div class="ph"><div class="chips">${defs.map(([k,l])=>`<button class="chip ${sellerFilter===k?'on':''}" onclick="sellerFilter='${k}';render()">${l}</button>`).join('')}</div>
-   <input placeholder="Mijozni qidirish" value="${esc(search)}" oninput="search=this.value;render();const i=document.querySelector('.ph input');i.focus();i.setSelectionRange(9e3,9e3)" aria-label="Mijozni qidirish"></div>
-   <div class="tw"><table><thead><tr><th>Mijoz</th><th>Oxirgi otgruzka</th><th>Muddat</th><th>Holat</th><th class="n">Qarz</th></tr></thead><tbody>
-   ${rows.map(c=>`<tr class="click" onclick="openRow=openRow===${esc(JSON.stringify(c.id))}?null:${esc(JSON.stringify(c.id))};render()"><td><b>${esc(c.name)}</b><div class="sub">${esc(c.phone)}</div></td><td>${short(c.last_ship)}</td><td>${short(c.due)}</td><td><span class="pill ${c.st.k}">${c.st.t}</span></td><td class="n"><b>${fmt(c.debt)}</b></td></tr>
-   ${openRow===c.id?c.docs.map(x=>`<tr class="docs"><td>№ ${esc(x.doc)}</td><td>${short(x.ship)}</td><td>${short(x.due)}</td><td class="sub">${esc(x.note)}</td><td class="n">${fmt(x.amount)}</td></tr>`).join(''):''}`).join('')||'<tr><td colspan="5" class="sub">Mijoz topilmadi</td></tr>'}
-   </tbody></table></div></section>`;
-}
-function calendar(){
-  const [y,m]=calMonth.split('-').map(Number);
-  const first=new Date(y,m-1,1), start=(first.getDay()+6)%7, n=new Date(y,m,0).getDate();
-  let cells=''; for(let i=0;i<start;i++) cells+='<div class="day out"></div>';
-  let mi=0,md=0;
-  for(let d=1;d<=n;d++){
-    const iso=`${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`, day=D.days[iso]||{income:0,due:0}, p=dayPlan(iso);
-    mi+=day.income; md+=day.due;
-    const past=iso<D.today, miss=past&&p.need&&p.got<p.need;
-    cells+=`<button class="day ${iso===D.today?'td':''} ${iso===calSel?'sel':''} ${miss?'miss':''}" onclick="calSel='${iso}';render()" aria-label="${human(iso)}">
-      <span class="dn">${d}</span>${day.income?`<span class="in">+${mln(day.income)}</span>`:''}${day.due?`<span class="du">${past?'kerak edi':'kerak'}: ${mln(day.due)}</span>`:''}</button>`;
-  }
-  return `<div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between"><h1>Kalendar</h1>
-   <div style="display:flex;gap:8px;align-items:center"><button class="nav" onclick="shiftMonth(-1)" aria-label="Oldingi oy">‹</button><b style="min-width:140px;text-align:center">${OY[m-1]} ${y}</b><button class="nav" onclick="shiftMonth(1)" aria-label="Keyingi oy">›</button></div></div>
-  <section class="kpis">${kpi('Oy davomida keldi',fmt(mi),'mijozlardan tushum','#067647')}${kpi('Oy davomida kelishi kerak',fmt(md),'izohdagi muddatlar bo\'yicha','#B54708')}</section>
-  <div class="split"><section><div class="cal">${HAF.map(h=>`<div class="wd">${h}</div>`).join('')}${cells}</div>
-   <div class="sub" style="margin-top:10px"><span style="color:var(--green);font-weight:600">yashil</span> — shu kuni kelgan pul, <span style="color:var(--amb);font-weight:600">sariq</span> — shu kunga muddat qo'yilgan qarz, qizil — kelishi kerak edi, to'liq kelmagan.</div></section>
-   <section>${dayPanel(calSel)}</section></div>`;
-}
-function dayPanel(iso){
-  if(!iso) return '<div class="card sub">Kunni bosing — o\'sha kuni qancha pul kelgani va kim to\'lashi kerakligi chiqadi.</div>';
-  const day=D.days[iso]||{income:0,items:[]}, p=dayPlan(iso), past=iso<D.today, fut=iso>D.today;
-  const payers=Object.entries(D.income_by_cp).filter(([k])=>k.endsWith('|'+iso)).map(([k,v])=>{return {n:(D.names||{})[k.split('|')[0]]||'?',v}}).sort((a,b)=>b.v-a.v);
-  return `<div class="panel"><div class="ph"><h2>${human(iso)}</h2><span class="sub">${fut?'Kelajak':past?'O\'tgan kun':'Bugun'}</span></div>
-   <div style="padding:16px 18px;display:grid;gap:8px">
-    ${fut?'':`<div>Shu kuni kelgan pul: <b style="color:var(--green)">${fmt(day.income)}</b></div>`}
-    <div>${fut?'Kelishi kerak':'Kelishi kerak edi'}: <b style="color:var(--amb)">${fmt(p.need)}</b></div>
-    ${fut?'':`<div>Muddati shu kun bo'lganlardan keldi: <b>${fmt(p.got)}</b>${p.need?' ('+Math.round(p.got/p.need*100)+'%)':''}</div>`}
-   </div>
-   <div class="tw"><table><thead><tr><th>Mijoz</th><th>Sotuvchi</th><th class="n">Summa</th><th>Holat</th></tr></thead><tbody>
-   ${p.items.map(i=>`<tr><td>${esc(i.client)}<div class="sub">№ ${esc(i.doc)} · ${short(i.ship)}</div></td><td>${esc(i.seller)}</td><td class="n">${fmt(i.amount)}</td><td>${i.open?(fut?'<span class="pill later">Kutilmoqda</span>':'<span class="pill over">Qarzda</span>'):'<span class="pill ok">Yopilgan</span>'}</td></tr>`).join('')||'<tr><td colspan="4" class="sub">Bu kunga muddat qo\'yilgan qarz yo\'q</td></tr>'}
-   </tbody></table></div>
-   ${payers.length?`<div class="ph" style="border-top:1px solid var(--line)"><h2 style="font-size:15px">Shu kuni to'laganlar</h2></div><div class="tw"><table><tbody>${payers.slice(0,30).map(x=>`<tr><td>${esc(x.n)}</td><td class="n">${fmt(x.v)}</td></tr>`).join('')}</tbody></table></div>`:''}</div>`;
-}
-function shiftMonth(k){const[y,m]=calMonth.split('-').map(Number);const d=new Date(y,m-1+k,1);calMonth=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;render()}
-function report(){
-  const iso=repDate||D.today, rows=sellersList().map(([n])=>({n,...dayPlan(iso,n)}));
-  const T=rows.reduce((a,r)=>({need:a.need+r.need,got:a.got+r.got}),{need:0,got:0});
-  const pc=(g,n)=>n?Math.round(g/n*100)+'%':'—';
-  return `<div style="display:flex;flex-wrap:wrap;gap:12px;align-items:end;justify-content:space-between"><div><h1>Kunlik hisobot</h1><div class="sub">${human(iso)} · har kuni 18:25 da yakunlanadi, kelmagani ertangi rejaga o'tadi</div></div>
-   <label class="sub">Sana <input type="date" value="${iso}" onchange="repDate=this.value;render()"></label></div>
-  <section class="kpis">${kpi('Kelishi kerak edi',fmt(T.need),'')}${kpi('Keldi',fmt(T.got),pc(T.got,T.need),'#067647')}${kpi('Kelmadi → ertangi rejaga',fmt(T.need-T.got),'','#B42318')}${kpi('Shu kungi jami tushum',fmt((D.days[iso]||{}).income),'barcha mijozlardan')}</section>
-  <section class="panel"><div class="ph"><h2>Sotuvchilar bo'yicha</h2></div><div class="tw"><table><thead><tr><th>Sotuvchi</th><th class="n">Kelishi kerak</th><th class="n">Keldi</th><th class="n">Kelmadi</th><th class="n">Bajarilishi</th></tr></thead><tbody>
-  ${rows.map(r=>`<tr class="click" onclick="go('seller',${esc(JSON.stringify(r.n))})"><td><b>${esc(r.n)}</b></td><td class="n">${fmt(r.need)}</td><td class="n" style="color:var(--green)">${fmt(r.got)}</td><td class="n" style="color:var(--red)">${fmt(r.need-r.got)}</td><td class="n">${pc(r.got,r.need)}</td></tr>`).join('')}
-  <tr><td><b>Jami</b></td><td class="n"><b>${fmt(T.need)}</b></td><td class="n"><b>${fmt(T.got)}</b></td><td class="n"><b>${fmt(T.need-T.got)}</b></td><td class="n"><b>${pc(T.got,T.need)}</b></td></tr></tbody></table></div></section>`;
-}
-// ---------- marshrut ----------
-function go(p,arg){location.hash=p+(arg?'='+encodeURIComponent(arg):'')}
-function render(){
-  if(!D) return;
-  const h=decodeURIComponent(location.hash.slice(1)||'home'), [p,arg]=h.split(/=(.*)/s);
-  document.querySelectorAll('#nav a').forEach(a=>a.classList.toggle('on',a.dataset.p===(p==='seller'?'sellers':p)));
-  const y=scrollY;
-  $('#app').innerHTML = p==='seller'?sellerPage(arg):p==='sellers'?sellersPage():p==='calendar'?calendar():p==='report'?report():home();
-  scrollTo(0,y);
-}
-addEventListener('hashchange',()=>{sellerFilter='all';search='';openRow=null;render();scrollTo(0,0)});
 async function load(){
   try{
-    const r=await fetch('api/data',{cache:'no-store'}); const j=await r.json();
-    if(j.loading){$('#upd').textContent='Yuklanmoqda…'; setTimeout(load,10000); return;}
-    const first=!D; D=j;
-    if(first){calMonth=D.today.slice(0,7);calSel=D.today}
-    $('#upd').textContent='Jonli · yangilandi '+j.updated; $('#dot').style.background=j.error?'#F79009':'#12B76A';
-    if(first||!document.activeElement||document.activeElement.tagName!=='INPUT') render();
-  }catch(e){$('#upd').textContent='Aloqa yo\'q, qayta urinilmoqda'; $('#dot').style.background='#D92D20'}
-  setTimeout(load,60000);
+    const r = await fetch('api/data'); D = await r.json();
+    document.getElementById('error').innerHTML = D.error ? `<div class="err">Xato: ${esc(D.error)}</div>` : '';
+    if(!D.ready){ document.getElementById('upd').textContent='Ma\'lumot olinmoqda…'; setTimeout(load,5000); return; }
+    D.debtors.forEach(d=>d.st=stOf(d));
+    if(!calMonth) calMonth = D.today.slice(0,7);
+    const t = new Date(D.updatedAt);
+    document.getElementById('upd').textContent = 'Yangilandi '+t.toLocaleTimeString('uz-UZ',{hour:'2-digit',minute:'2-digit',timeZone:'Asia/Tashkent'});
+    render();
+  }catch(e){ document.getElementById('error').innerHTML=`<div class="err">Serverga ulanib bo'lmadi. Internetni tekshirib, qayta urinib ko'ring.</div>`; }
 }
-load();
+
+function visible(){ return D.debtors.filter(d=>!hidden.has(d.st)); }
+
+function renderHero(){
+  const all = D.debtors, tot = all.reduce((s,d)=>s+d.debt,0);
+  document.getElementById('total').innerHTML = fmt(tot)+`<small>so'm · ${all.length} mijoz</small>`;
+  const sums = ST.map(s=>({...s, sum: all.filter(d=>d.st===s.k).reduce((a,d)=>a+d.debt,0), n: all.filter(d=>d.st===s.k).length}));
+  document.getElementById('strip').innerHTML = sums.filter(s=>s.sum>0).map(s=>`<div title="${s.t}: ${som(s.sum)}" style="width:${s.sum/tot*100}%;background:${s.c}"></div>`).join('');
+  document.getElementById('legend').innerHTML = sums.map(s=>`<button data-st="${s.k}" class="${hidden.has(s.k)?'off':''}"><i class="dot" style="background:${s.c}"></i>${s.t}: <b>${som(s.sum)}</b> (${s.n})</button>`).join('');
+  document.querySelectorAll('#legend button').forEach(b=>b.onclick=()=>{ hidden.has(b.dataset.st)?hidden.delete(b.dataset.st):hidden.add(b.dataset.st); render(); });
+}
+
+function chip(d){ const s=stInfo(d.st);
+  const txt = d.daysLeft===null ? 'Muddat yo\'q' : d.daysLeft<0 ? `${-d.daysLeft} kun o'tdi` : d.daysLeft===0 ? 'Bugun' : `${d.daysLeft} kun qoldi`;
+  return `<span class="chip" style="background:${s.c}">${txt}</span>`; }
+
+function debtTable(list, showSeller=true){
+  if(!list.length) return `<div class="empty-msg">Bu ro'yxatda qarzdor yo'q.</div>`;
+  return `<div class="tscroll"><table><thead><tr><th>Mijoz</th>${showSeller?'<th>Sotuvchi</th>':''}<th class="n">Qarz</th><th>Muddat</th><th>Holat</th><th>Otgruzka</th></tr></thead><tbody>`+
+    list.map(d=>`<tr><td><b>${esc(d.name)}</b></td>${showSeller?`<td>${esc(d.seller)}</td>`:''}<td class="n"><b>${som(d.debt)}</b></td><td>${dmy(d.due)}${d.term!==null?`<div class="upd">${d.term} kunlik</div>`:''}</td><td>${chip(d)}</td><td class="upd">${esc(d.doc||'—')}</td></tr>`).join('')+
+    `</tbody></table></div>`;
+}
+
+// Sotuvchi bo'yicha prognoz: oxirgi 30 kunda kelishi kerak bo'lgandan qancha keldi
+function sellerStats(){
+  const from = addDays(D.today,-30), m = {};
+  const get = n => m[n] ||= {name:n, debt:0, n:0, byst:{}, due30:0, paid30:0};
+  for(const d of visible()){ const s=get(d.seller); s.debt+=d.debt; s.n++; s.byst[d.st]=(s.byst[d.st]||0)+d.debt; }
+  for(const p of D.planned) if(p.date>=from && p.date<D.today){ const a=D.agents[p.agentId]; if(a) get(a.seller).due30+=p.amount; }
+  for(const p of D.payments) if(p.date>=from && p.date<D.today){ const a=D.agents[p.agentId]; if(a) get(a.seller).paid30+=p.amount; }
+  return Object.values(m).filter(s=>s.n>0).sort((a,b)=>b.debt-a.debt);
+}
+
+function viewSellers(){
+  const list = sellerStats();
+  let h = `<div class="sellers">`+list.map(s=>{
+    let acc=0; const grad = ST.filter(x=>s.byst[x.k]).map(x=>{const a=acc/s.debt*360; acc+=s.byst[x.k]; return `${x.c} ${a}deg ${acc/s.debt*360}deg`;}).join(',');
+    const rate = s.due30>0 ? Math.min(100,Math.round(s.paid30/s.due30*100)) : null;
+    const over = s.byst.over||0;
+    return `<button class="seller" data-s="${esc(s.name)}"><div class="donut" style="background:conic-gradient(${grad})"></div><div>
+      <h3>${esc(s.name)}</h3><div class="amt">${som(s.debt)}</div>
+      <div class="meta">${s.n} mijoz${over?` · muddati o'tgan ${som(over)}`:''}</div>
+      <div class="meta" style="margin-top:6px">Undirish (30 kun): <b>${rate===null?'—':rate+'%'}</b></div>
+      <div class="prog"><div style="width:${rate||0}%"></div></div></div></button>`;}).join('')+`</div>`;
+  if(selSeller){
+    const lst = visible().filter(d=>d.seller===selSeller);
+    h += `<div class="panel detail"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap"><h3>${esc(selSeller)} — qarzdorlari</h3><button class="btn ghost" id="closeSel">Yopish</button></div>${debtTable(lst,false)}</div>`;
+  }
+  return h;
+}
+
+function viewAll(){
+  const qq=q.toLowerCase(), lst=visible().filter(d=>!qq||d.name.toLowerCase().includes(qq)||d.seller.toLowerCase().includes(qq));
+  return `<div class="panel"><input class="search" id="q" placeholder="Mijoz yoki sotuvchi nomi bo'yicha qidirish" value="${esc(q)}">${debtTable(lst)}</div>`;
+}
+
+// Bugungi hisobot: kelishi kerak / keldi / kelmadi, kelmagani ertangi rejaga
+function viewReport(){
+  const T=D.today, TM=addDays(T,1), m={};
+  const get = n => m[n] ||= {name:n, need:0, got:0, tomorrow:0};
+  for(const p of D.planned){ const a=D.agents[p.agentId]; if(!a) continue;
+    if(p.date===T) get(a.seller).need+=p.amount; if(p.date===TM) get(a.seller).tomorrow+=p.amount; }
+  for(const p of D.payments){ if(p.date!==T) continue; const a=D.agents[p.agentId]; if(a) get(a.seller).got+=p.amount; }
+  const rows = Object.values(m).sort((a,b)=>b.need-a.need);
+  const tot = rows.reduce((t,r)=>({need:t.need+r.need,got:t.got+r.got,tm:t.tm+r.tomorrow+Math.max(0,r.need-r.got)}),{need:0,got:0,tm:0});
+  if(!rows.length) return `<div class="panel"><div class="empty-msg">Bugun (${dmy(T)}) muddati keladigan nasiya yo'q va to'lov tushmagan.</div></div>`;
+  return `<div class="panel"><p class="upd" style="margin-top:0">${dmy(T)} — har kuni 18:25 da shu jadvalni tekshiring. Kelmagan qism ertangi rejaga qo'shiladi.</p><div class="tscroll"><table>
+    <thead><tr><th>Sotuvchi</th><th class="n">Kelishi kerak</th><th class="n">Keldi</th><th class="n">Kelmadi</th><th class="n">Ertangi reja</th></tr></thead><tbody>`+
+    rows.map(r=>{const miss=Math.max(0,r.need-r.got);return `<tr class="click" data-s="${esc(r.name)}"><td><b>${esc(r.name)}</b></td><td class="n">${som(r.need)}</td><td class="n" style="color:var(--s-later)">${som(r.got)}</td><td class="n" style="color:${miss?'var(--s-over)':'inherit'}"><b>${som(miss)}</b></td><td class="n">${som(r.tomorrow+miss)}</td></tr>`;}).join('')+
+    `<tr><td><b>Jami</b></td><td class="n"><b>${som(tot.need)}</b></td><td class="n"><b>${som(tot.got)}</b></td><td class="n"><b>${som(Math.max(0,tot.need-tot.got))}</b></td><td class="n"><b>${som(tot.tm)}</b></td></tr></tbody></table></div></div>`;
+}
+
+function viewCal(){
+  const [y,mo]=calMonth.split('-').map(Number), first=new Date(Date.UTC(y,mo-1,1)), days=new Date(Date.UTC(y,mo,0)).getUTCDate();
+  const lead=(first.getUTCDay()+6)%7, need={}, got={};
+  for(const p of D.planned) if(p.date.startsWith(calMonth)) need[p.date]=(need[p.date]||0)+p.amount;
+  for(const p of D.payments) if(p.date.startsWith(calMonth)) got[p.date]=(got[p.date]||0)+p.amount;
+  const months=['Yanvar','Fevral','Mart','Aprel','May','Iyun','Iyul','Avgust','Sentabr','Oktabr','Noyabr','Dekabr'];
+  let h=`<div class="panel"><div class="cal-head"><button class="btn ghost" id="pm" aria-label="Oldingi oy">‹</button><h3>${months[mo-1]} ${y}</h3><button class="btn ghost" id="nm" aria-label="Keyingi oy">›</button></div><div class="cal">`+
+    ['Du','Se','Ch','Pa','Ju','Sh','Ya'].map(w=>`<div class="wd">${w}</div>`).join('')+'<div class="day empty"></div>'.repeat(lead);
+  for(let i=1;i<=days;i++){
+    const ds=`${calMonth}-${String(i).padStart(2,'0')}`, n=need[ds]||0, g=got[ds]||0, past=ds<=D.today;
+    h+=`<button class="day${ds===D.today?' today':''}" data-d="${ds}"><span class="d">${i}</span>${n?`<span class="k">Kerak ${fmt(n)}</span>`:''}${past&&g?`<span class="ok">Keldi ${fmt(g)}</span>`:''}${past&&n>g?`<span class="bad">Kam ${fmt(n-g)}</span>`:''}</button>`;
+  }
+  h+='</div></div>';
+  if(selDay){
+    const pl=D.planned.filter(p=>p.date===selDay), py=D.payments.filter(p=>p.date===selDay), past=selDay<=D.today;
+    const sn=pl.reduce((s,p)=>s+p.amount,0), sg=py.reduce((s,p)=>s+p.amount,0);
+    h+=`<div class="panel detail"><h3>${dmy(selDay)}</h3><p class="upd" style="margin-top:0">Kelishi kerak: <b>${som(sn)}</b>${past?` · Keldi: <b>${som(sg)}</b>`:''}</p>
+      <h4 style="margin:12px 0 4px">Shu kunga muddat qo'yilgan otgruzkalar</h4>${pl.length?`<div class="tscroll"><table><thead><tr><th>Mijoz</th><th>Sotuvchi</th><th>Otgruzka</th><th class="n">Summa</th></tr></thead><tbody>${pl.map(p=>{const a=D.agents[p.agentId]||{};return `<tr><td>${esc(a.name)}</td><td>${esc(a.seller)}</td><td class="upd">${esc(p.doc)} (${dmy(p.shipDate)})</td><td class="n">${som(p.amount)}</td></tr>`;}).join('')}</tbody></table></div>`:`<div class="empty-msg">Yo'q</div>`}
+      ${past?`<h4 style="margin:16px 0 4px">Tushgan to'lovlar</h4>${py.length?`<div class="tscroll"><table><thead><tr><th>Mijoz</th><th>Sotuvchi</th><th class="n">Summa</th></tr></thead><tbody>${py.map(p=>{const a=D.agents[p.agentId]||{};return `<tr><td>${esc(a.name)}</td><td>${esc(a.seller)}</td><td class="n">${som(p.amount)}</td></tr>`;}).join('')}</tbody></table></div>`:`<div class="empty-msg">To'lov tushmagan</div>`}`:''}</div>`;
+  }
+  return h;
+}
+
+function render(){
+  renderHero();
+  document.querySelectorAll('nav.tabs button').forEach(b=>b.setAttribute('aria-selected', b.dataset.tab===tab));
+  const v=document.getElementById('view');
+  v.innerHTML = tab==='sellers'?viewSellers():tab==='all'?viewAll():tab==='cal'?viewCal():viewReport();
+  v.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{ selSeller=b.dataset.s; tab='sellers'; render(); document.querySelector('.detail')?.scrollIntoView({behavior:'smooth'}); });
+  const cs=document.getElementById('closeSel'); if(cs) cs.onclick=()=>{selSeller=null;render();};
+  const qi=document.getElementById('q'); if(qi){ qi.oninput=()=>{ q=qi.value; const pos=qi.selectionStart; render(); const n=document.getElementById('q'); n.focus(); n.setSelectionRange(pos,pos); }; }
+  v.querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{ selDay=b.dataset.d; render(); document.querySelector('.detail')?.scrollIntoView({behavior:'smooth'}); });
+  const shift=k=>{ const [y,m]=calMonth.split('-').map(Number), d=new Date(Date.UTC(y,m-1+k,1)); calMonth=d.toISOString().slice(0,7); selDay=null; render(); };
+  const pm=document.getElementById('pm'); if(pm){ pm.onclick=()=>shift(-1); document.getElementById('nm').onclick=()=>shift(1); }
+}
+
+document.querySelectorAll('nav.tabs button').forEach(b=>b.onclick=()=>{ tab=b.dataset.tab; render(); });
+document.getElementById('refresh').onclick=async()=>{ const b=document.getElementById('refresh'); b.disabled=true; b.textContent='Yangilanmoqda…';
+  try{ await fetch('api/refresh',{method:'POST'}); }catch(e){} await load(); b.disabled=false; b.textContent='Yangilash'; };
+load(); setInterval(load, 5*60*1000);
 </script>
 </body>
 </html>
