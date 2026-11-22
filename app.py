@@ -17,6 +17,8 @@ app.config.update(SESSION_COOKIE_HTTPONLY=True, SESSION_COOKIE_SAMESITE="Lax",
                   SESSION_COOKIE_SECURE=bool(os.environ.get("RENDER")), PERMANENT_SESSION_LIFETIME=30 * 86400)
 
 DAILY = {"report": None, "error": None, "running": False, "last_day": None}
+LIVE = {"data": None, "error": None}
+LIVE_SEC = int(os.environ.get("LIVE_SECONDS", "300"))
 _dlock = threading.Lock()
 
 
@@ -80,6 +82,11 @@ def api_daily():
     return jsonify({"running": DAILY["running"], "error": DAILY["error"], "report": DAILY["report"]})
 
 
+@app.get("/api/live")
+def api_live():
+    return jsonify({"error": LIVE["error"], "data": LIVE["data"]})
+
+
 @app.post("/api/daily/run")
 def api_daily_run():
     day = (request.json or {}).get("day") if request.is_json else None
@@ -128,6 +135,16 @@ def send_telegram(r):
         log("Telegram xato: " + str(e))
 
 
+def live_loop():
+    time.sleep(20)
+    while True:
+        try:
+            LIVE["data"] = daily.live(DAILY["report"]); LIVE["error"] = None
+        except Exception as e:
+            LIVE["error"] = str(e)[:300]; log("LIVE XATO: " + traceback.format_exc()[-600:])
+        time.sleep(LIVE_SEC)
+
+
 def loop():
     while True:
         safe_nasiya()
@@ -153,6 +170,7 @@ def start():
     if not ms.token():
         nasiya.STORE.error = DAILY["error"] = "MOYSKLAD_TOKEN o'rnatilmagan (Render → Environment)"; return
     threading.Thread(target=loop, daemon=True).start()
+    threading.Thread(target=live_loop, daemon=True).start()
     log(f"fon ishi boshlandi (pid {os.getpid()})")
 
 

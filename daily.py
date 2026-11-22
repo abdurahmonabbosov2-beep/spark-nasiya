@@ -214,3 +214,40 @@ def telegram_text(r, url=""):
              f"Kechagi qarzga sotuv: {f(r['credit_total'])} so'm · Umumiy qarz: {f(r['debt_total'])} so'm"]
     if url: lines.append(url)
     return "\n".join(lines)
+
+
+def live(prev=None):
+    """Har 5 daqiqada: bugungi savdo, oy boshidan bugungacha reyting, bugungi hujjatlar (yengil)."""
+    n = ms.now(); T = n.date().isoformat(); M0 = n.date().replace(day=1).isoformat()
+    emps = {e["id"]: e["name"] for e in ms.all_rows("entity/employee", {})}
+    today = sorted((_emp_row(r) for r in _byemp(T)), key=lambda x: -x["sales"])
+    month = sorted((_emp_row(r) for r in ms.all_rows("report/profit/byemployee", ms.day_range(M0, T))),
+                   key=lambda x: -x["sales"])
+    old = {}
+    if prev and prev.get("month") and prev["month"].get("from") == M0:
+        old = {e["name"]: e.get("days", {}) for e in prev["month"]["employees"]}
+    tmap = {e["name"]: e["sales"] for e in today}
+    for m in month:
+        m["days"] = {k: v for k, v in old.get(m["name"], {}).items() if k < T}
+        if tmap.get(m["name"]): m["days"][T] = tmap[m["name"]]
+    ms_ = sum(m["sales"] for m in month); mp = sum(m["profit"] for m in month)
+    docs = {}
+    for kind, _ in ACTS:
+        docs[kind] = sorted(({"id": d["id"], "doc": d["name"], "who": emps.get(d["owner"], "—"), "client": d["agent"],
+                              "aid": d["aid"], "sum": round(ms.som(d["sum"])), "payed": round(ms.som(d["payed"])),
+                              "time": d["moment"][11:16], "note": d["desc"]} for d in _docs(kind, T)),
+                            key=lambda x: -x["sum"])
+    acts = defaultdict(dict)
+    for kind, rows in docs.items():
+        for d in rows:
+            a = acts[d["who"]]; a[kind] = a.get(kind, 0) + 1; a[kind + "_sum"] = a.get(kind + "_sum", 0) + d["sum"]
+    activity = sorted(({"name": k, **v} for k, v in acts.items()),
+                      key=lambda x: -sum(x.get(k, 0) for k, _ in ACTS))
+    s = sum(e["sales"] for e in today); p = sum(e["profit"] for e in today)
+    return {"at": n.strftime("%H:%M"), "day": T, "acts": ACTS, "docs": docs, "activity": activity,
+            "employees": today,
+            "kpi": {"sales": s, "profit": p, "margin": round(p / s * 100, 1) if s else 0,
+                    "returns": sum(e["returns"] for e in today), "count": sum(e["count"] for e in today)},
+            "month": {"from": M0, "to": T, "sales": ms_, "profit": mp, "margin": round(mp / ms_ * 100, 1) if ms_ else 0,
+                      "returns": sum(m["returns"] for m in month), "count": sum(m["count"] for m in month),
+                      "employees": month, "live": True}}

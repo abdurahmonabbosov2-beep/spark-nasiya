@@ -98,7 +98,7 @@ const $=s=>document.querySelector(s);
 const f=x=>(Math.round(x||0)).toLocaleString('ru-RU').replace(/ /g,' ');
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const dd=s=>s?s.slice(8,10)+'.'+s.slice(5,7):'—';
-let TAB='daily', D=null, N=null, NV={view:'home'}, calMonth=null;
+let TAB='daily', D=null, N=null, LV=null, CURM=null, NV={view:'home'}, calMonth=null;
 /* MoySklad havolalari */
 const MSU='https://online.moysklad.ru/app/#';
 const PT={product:'good',variant:'feature',service:'service',bundle:'bundle'};
@@ -124,7 +124,7 @@ document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{
 
 async function getJ(u){const r=await fetch(u); if(r.status===401){location='/login';return null} return r.json();}
 async function load(){
-  [D,N]=await Promise.all([getJ('api/daily'),getJ('api/nasiya')]); render();
+  [D,N,LV]=await Promise.all([getJ('api/daily'),getJ('api/nasiya'),getJ('api/live')]); render();
 }
 function render(){ TAB==='daily'?renderDaily():renderNasiya(); }
 
@@ -153,6 +153,7 @@ function chart(series){
   <div class="legend"><span><b style="background:#4f63fb"></b>Savdo</span><span><b style="background:#12b76a"></b>Foyda</span><span>Eng yuqori kun: ${f(mx)} so'm</span></div>`;
 }
 
+const SD=w=>w==='L'?LV.data:D.report;
 function kcard(c,l,v,sub,fn){return `<div class="card kpi go" style="--c:var(--${c})" onclick="${fn}"><span class="hint">ochish ›</span><div class="l">${l}</div><div class="v">${v}</div><div class="small">${sub}</div></div>`;}
 function renderDaily(){
   const app=$('#app');
@@ -162,12 +163,13 @@ function renderDaily(){
     <span class="muted small">${r?'Hisoblangan: '+r.built:''}</span>
     <button class="btn" id="rerun">${D.running?'Hisoblanmoqda…':'Qayta hisoblash'}</button></div>`;
   if(D.error) top+=`<div class="err">Xato: ${esc(D.error)}</div>`;
-  if(!r){app.innerHTML=top+'<div class="note">Hisobot tayyorlanmoqda. Birinchi marta 3–6 daqiqa ketadi, sahifa o\'zi yangilanadi.</div>';bindRerun();return}
-  const k=r.kpi, M=r.month;
+  const Lv=LV&&LV.data;
+  if(!r&&!Lv){app.innerHTML=top+'<div class="note">Hisobot tayyorlanmoqda. Birinchi marta 3–6 daqiqa ketadi, sahifa o\'zi yangilanadi.</div>';bindRerun();return}
+  const M=(Lv&&Lv.month)||(r&&r.month); CURM=M;
   let h=top;
   if(M){
     const mx=Math.max(...M.employees.map(e=>e.sales),1);
-    h+=`<h2 style="margin-top:6px">Oylik reyting · ${dd(M.from)} – ${dd(M.to)} <span class="pill blue">kim ko'p sotyapti</span></h2>
+    h+=`<h2 style="margin-top:6px">Oylik reyting · ${dd(M.from)} – ${dd(M.to)} <span class="pill blue">kim ko'p sotyapti</span>${M.live?` <span class="pill green">● jonli · ${Lv.at} · har 5 daqiqada</span>`:''}</h2>
     <div class="grid k4">
       ${kcard('blue','Oylik savdo',f(M.sales),'<span class="muted">'+M.count+' ta sotuv</span>',"monthM()")}
       ${kcard('green','Oylik foyda',f(M.profit),'<span class="muted">marja '+M.margin+'%</span>',"monthM()")}
@@ -180,6 +182,18 @@ function renderDaily(){
       <div class="sm">${f(e.sales)}<div class="small muted" style="font-weight:600">so'm ›</div></div></div>`).join('')}</div>
     ${SRC('MoySklad → Прибыльность → по сотрудникам, '+uz(M.from)+' – '+uz(M.to),msList('demand',M.from,M.to))}`;
   }
+  if(Lv){const t=Lv.kpi;
+    h+=`<h2>Bugun · ${uz(Lv.day)} <span class="pill green">● ${Lv.at} holatiga</span></h2><div class="grid k4">
+    ${kcard('blue','Bugungi savdo',f(t.sales),'<span class="muted">'+t.count+' ta sotuv</span>',"salesM('L')")}
+    ${kcard('green','Bugungi foyda',f(t.profit),'<span class="muted">marja '+t.margin+'%</span>',"salesM('L')")}
+    ${kcard('orange','Bugungi qaytarish',f(t.returns),'<span class="muted">'+(Lv.docs.salesreturn||[]).length+' ta hujjat</span>',"docsM('salesreturn','L')")}
+    ${kcard('teal','Bugungi kassa + bank kirim',f([...(Lv.docs.cashin||[]),...(Lv.docs.paymentin||[])].reduce((a,x)=>a+x.sum,0)),'<span class="muted">pul tushumi</span>',"incomeM()")}
+    </div>
+    <div class="card" style="margin-top:14px">${table([{h:'Xodim',k:'name'},{h:'Savdo',n:1,f:x=>'<b>'+f(x.sales)+'</b>'},{h:'Foyda',n:1,f:x=>f(x.profit)},{h:'Marja',n:1,f:x=>x.margin+'%'},{h:'Sotuvlar',n:1,k:'count'},{h:'Qaytarish',n:1,f:x=>f(x.returns)}],Lv.employees,20,'lemp',x=>whoM(x.name,'L'))}
+    ${SRC('MoySklad → Прибыльность → по сотрудникам, bugun '+Lv.at+' holatiga',msList('demand',Lv.day))}</div>`;
+  }
+  if(!r){app.innerHTML=h+'<div class="note">Kechagi to\'liq hisobot (ombor tahlili, grafik) tayyorlanmoqda…</div>';bindRerun();return}
+  const k=r.kpi;
   h+=`<h2>Kecha · ${uz(r.day)}</h2><div class="grid k4">
     ${kcard('blue','Savdo',f(k.sales),delta(k.sales,k.sales7),"salesM()")}
     ${kcard('green','Foyda',f(k.profit),delta(k.profit,k.profit7),"salesM()")}
@@ -220,14 +234,14 @@ const creditT=(rows,lim)=>table([{h:'Otgruzka',f:x=>L(msDoc('demand',x.id),'<b>'
 const debtT=(rows,lim)=>table([{h:'Mijoz',f:x=>L(msCo(x.id),'<b>'+esc(x.name)+'</b>')},{h:'Sotuvchi',k:'seller'},{h:'Qarz',n:1,f:x=>'<b>'+f(x.debt)+'</b>'},{h:'Muddat',n:1,f:x=>dd(x.due)}],rows,lim||15);
 
 /* ----- tafsilot oynalari ----- */
-function monthM(){const M=D.report.month;
+function monthM(){const M=CURM;
   openM(`Oylik savdo · ${uz(M.from)} – ${uz(M.to)}`,`<div class="grid k4">
    <div class="card kpi" style="--c:var(--blue)"><div class="l">Savdo</div><div class="v">${f(M.sales)}</div></div>
    <div class="card kpi" style="--c:var(--green)"><div class="l">Foyda</div><div class="v">${f(M.profit)}</div><div class="small muted">marja ${M.margin}%</div></div>
    <div class="card kpi" style="--c:var(--orange)"><div class="l">Qaytarish</div><div class="v">${f(M.returns)}</div></div></div>
    <h2>Xodimlar bo'yicha <span class="muted small">qatorni bosing</span></h2>${table([{h:'#',f:x=>M.employees.indexOf(x)+1},{h:'Xodim',k:'name'},{h:'Savdo',n:1,f:x=>'<b>'+f(x.sales)+'</b>'},{h:'Ulushi',n:1,f:x=>(M.sales?(x.sales/M.sales*100).toFixed(1):0)+'%'},{h:'Foyda',n:1,f:x=>f(x.profit)},{h:'Marja',n:1,f:x=>x.margin+'%'},{h:'Sotuvlar',n:1,k:'count'},{h:'Qaytarish',n:1,f:x=>f(x.returns)}],M.employees,30,'mm',x=>empM(M.employees.indexOf(x)))}
    ${SRC('MoySklad → Прибыльность → по сотрудникам, '+uz(M.from)+' – '+uz(M.to),msList('demand',M.from,M.to))}`);}
-function empM(i){const M=D.report.month, e=M.employees[i];
+function empM(i){const M=CURM, e=M.employees[i];
   const days=[];for(let d=new Date(M.from+'T00:00:00Z');d<=new Date(M.to+'T00:00:00Z');d.setUTCDate(d.getUTCDate()+1)){const k=d.toISOString().slice(0,10);days.push([k,(e.days||{})[k]||0]);}
   const mx=Math.max(...days.map(x=>x[1]),1), best=days.reduce((a,b)=>b[1]>a[1]?b:a,days[0]||['',0]);
   openM(`${i+1}-o'rin · ${esc(e.name)}`,`<div class="grid k4">
@@ -239,14 +253,18 @@ function empM(i){const M=D.report.month, e=M.employees[i];
    <div class="row small muted"><span>${dd(M.from)}</span><span>Eng yaxshi kun: ${dd(best[0])} · ${f(best[1])}</span><span>${dd(M.to)}</span></div></div>
    ${table([{h:'Kun',f:x=>dd(x[0])},{h:'Savdo',n:1,f:x=>x[1]?f(x[1]):'<span class="muted">—</span>'},{h:'',f:x=>MS(msList('demand',x[0]),'otgruzkalar ↗')}],days.slice().reverse(),7)}
    ${SRC('MoySklad → Прибыльность → по сотрудникам. Otgruzkalar ro\'yxatida «Владелец-сотрудник: '+esc(e.name)+'» filtrini tanlang',msList('demand',M.from,M.to))}`);}
-function salesM(){const r=D.report;
-  openM(`Kecha savdo · ${uz(r.day)}`,`<div class="small muted">Savdo ${f(r.kpi.sales)} · foyda ${f(r.kpi.profit)} · marja ${r.kpi.margin}%</div>
-   <h2>Xodimlar bo'yicha</h2>${table([{h:'Xodim',k:'name'},{h:'Savdo',n:1,f:x=>'<b>'+f(x.sales)+'</b>'},{h:'Foyda',n:1,f:x=>f(x.profit)},{h:'Marja',n:1,f:x=>x.margin+'%'},{h:'Sotuvlar',n:1,k:'count'}],r.employees,20,'se',x=>whoM(x.name))}
+function salesM(w){const r=SD(w);
+  openM(`${w==='L'?'Bugungi savdo':'Kecha savdo'} · ${uz(r.day)}`,`<div class="small muted">Savdo ${f(r.kpi.sales)} · foyda ${f(r.kpi.profit)} · marja ${r.kpi.margin}%</div>
+   <h2>Xodimlar bo'yicha</h2>${table([{h:'Xodim',k:'name'},{h:'Savdo',n:1,f:x=>'<b>'+f(x.sales)+'</b>'},{h:'Foyda',n:1,f:x=>f(x.profit)},{h:'Marja',n:1,f:x=>x.margin+'%'},{h:'Sotuvlar',n:1,k:'count'}],r.employees,20,'se',x=>whoM(x.name,w))}
    <h2>Otgruzkalar <span class="pill">${(r.docs.demand||[]).length}</span></h2>${table(docCols('demand'),r.docs.demand||[],15)}
    ${SRC('MoySklad → Прибыльность + Отгрузки, '+uz(r.day),msList('demand',r.day))}`);}
-function docsM(kind){const r=D.report, rows=r.docs[kind]||[];
+function docsM(kind,w){const r=SD(w), rows=r.docs[kind]||[];
   openM(`${KN[kind]} · ${uz(r.day)} · ${rows.length} ta · ${f(rows.reduce((a,x)=>a+x.sum,0))} so'm`,table(docCols(kind),rows,30)+SRC('MoySklad → '+KN[kind]+', '+uz(r.day),msList(kind,r.day)));}
-function whoM(name){const r=D.report;let h='';
+function incomeM(){const r=LV.data;let h='';
+  [['cashin','Kassa kirim (Приходные ордера)'],['paymentin','Bank kirim (Входящие платежи)']].forEach(([k,t])=>{const rows=r.docs[k]||[];
+    h+=`<h2>${t} <span class="pill">${rows.length} ta · ${f(rows.reduce((a,x)=>a+x.sum,0))}</span> ${MS(msList(k,r.day))}</h2>${table(docCols(k),rows,15)}`;});
+  openM(`Bugungi pul tushumi · ${uz(r.day)} · ${r.at} holatiga`,h+SRC('MoySklad → Деньги, bugun'));}
+function whoM(name,w){const r=SD(w);let h='';
   r.acts.forEach(a=>{const rows=(r.docs[a[0]]||[]).filter(x=>x.who===name);
     if(rows.length) h+=`<h2>${a[1]} <span class="pill">${rows.length} ta · ${f(rows.reduce((s,x)=>s+x.sum,0))}</span> ${MS(msList(a[0],r.day))}</h2>${table(docCols(a[0]).filter(c=>c.h!=='Xodim'),rows,10)}`;});
   const e=r.employees.find(x=>x.name===name);
@@ -361,7 +379,9 @@ function nReport(){
   return h;
 }
 load(); setInterval(async()=>{N=await getJ('api/nasiya'); if(TAB==='nasiya' && NV.view!=='cal') render();},300000);
-setInterval(async()=>{if(D&&D.report) return; D=await getJ('api/daily'); if(TAB==='daily') render();},15000);
+setInterval(async()=>{if(D&&D.report) return; D=await getJ('api/daily'); if(TAB==='daily'&&!$('#mod').classList.contains('open')) render();},15000);
+setInterval(async()=>{const x=await getJ('api/live'); const ch=!LV||!LV.data||!x.data||x.data.at!==LV.data.at; LV=x;
+  if(ch&&TAB==='daily'&&!$('#mod').classList.contains('open')) render();},60000);
 </script>
 </body>
 </html>
