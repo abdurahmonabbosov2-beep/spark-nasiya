@@ -166,7 +166,7 @@ class Store:
                 if left <= 0: break
                 amt = min(left, d["sum"] / 100); left -= amt
                 due, exact = due_info(d.get("description"), d["moment"][:10])
-                docs.append({"doc": d["name"], "ship": d["moment"][:10], "amount": round(amt),
+                docs.append({"id": d["id"], "doc": d["name"], "ship": d["moment"][:10], "amount": round(amt),
                              "due": due, "exact": exact,
                              "note": (d.get("description") or "")[:120]})
                 open_keys.add((cid, d["name"]))
@@ -193,7 +193,7 @@ class Store:
             if not due: continue
             name = (self.bal.get(cid) or {}).get("name") or (self.cps.get(cid) or {}).get("name", "?")
             due_all[due].append({"cid": cid, "client": name, "seller": seller_by.get(cid) or seller_of(cid),
-                                 "doc": d["name"], "ship": d["moment"][:10], "amount": round(d["sum"] / 100),
+                                 "id": d["id"], "doc": d["name"], "ship": d["moment"][:10], "amount": round(d["sum"] / 100),
                                  "open": (cid, d["name"]) in open_keys, "exact": exact,
                                  "note": (d.get("description") or "")[:120]})
         days = {}
@@ -205,7 +205,7 @@ class Store:
         payers = defaultdict(list)
         for (cid, k), v in pay_cp_day.items():
             if k >= cut:
-                payers[k].append({"client": (self.bal.get(cid) or {}).get("name") or (self.cps.get(cid) or {}).get("name", "?"),
+                payers[k].append({"cid": cid, "client": (self.bal.get(cid) or {}).get("name") or (self.cps.get(cid) or {}).get("name", "?"),
                                   "seller": seller_by.get(cid) or seller_of(cid), "amount": round(v)})
         return {"today": today.isoformat(), "customers": customers, "days": days, "payers": payers}
 

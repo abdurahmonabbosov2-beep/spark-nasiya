@@ -12,14 +12,13 @@
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:15px;line-height:1.45;font-variant-numeric:tabular-nums}
 button{font:inherit;cursor:pointer}
-header{position:sticky;top:0;z-index:5;background:linear-gradient(120deg,#2f7cf6,#6a4bff 60%,#ee46bc);color:#fff;box-shadow:0 6px 24px rgba(60,70,200,.25)}
+header{position:sticky;top:0;z-index:5;background:#fff;color:var(--ink);border-bottom:1px solid var(--line);box-shadow:0 2px 12px rgba(27,36,64,.06)}
 .hw{max-width:1240px;margin:0 auto;padding:12px 18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
-.brand{font-weight:800;font-size:19px;display:flex;align-items:center;gap:8px;margin-right:auto}
-.brand i{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,#ffd000,#ff7a00);display:grid;place-items:center;font-style:normal}
-.tabs{display:flex;gap:6px;background:rgba(255,255,255,.16);padding:4px;border-radius:12px}
-.tabs button{border:0;background:transparent;color:#fff;padding:7px 14px;border-radius:9px;font-weight:600}
-.tabs button.on{background:#fff;color:var(--violet)}
-.hw a{color:#fff;opacity:.85;font-size:13px;text-decoration:none}
+.brand{font-weight:800;font-size:21px;color:#1d6ff2;margin-right:auto;letter-spacing:-.01em}
+.tabs{display:flex;gap:4px;background:#eef3fc;padding:4px;border-radius:12px}
+.tabs button{border:0;background:transparent;color:var(--ink);padding:7px 14px;border-radius:9px;font-weight:600}
+.tabs button.on{background:#1d6ff2;color:#fff;box-shadow:0 2px 8px rgba(29,111,242,.3)}
+.hw > a{color:var(--muted);font-size:13px;text-decoration:none}
 .wrap{max-width:1240px;margin:0 auto;padding:18px 18px 60px}
 .bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:4px 0 16px}
 .bar h1{font-size:22px;margin:0 auto 0 0}
@@ -64,16 +63,35 @@ tr:last-child td{border-bottom:0}
 .sub{display:none;background:#f8faff}.sub.open{display:table-row}
 .clk{cursor:pointer}.clk:hover{background:#f8faff}
 .back{border:0;background:none;color:var(--blue);font-weight:700;padding:0;margin-bottom:8px}
+.go{cursor:pointer;transition:transform .12s,box-shadow .12s}.go:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(29,111,242,.14)}
+.kpi .hint{position:absolute;top:10px;right:12px;font-size:12px;color:#9aa4bd}
+.ms{color:#1d6ff2;text-decoration:none;font-weight:600;white-space:nowrap}.ms:hover{text-decoration:underline}
+a.lnk{color:inherit;text-decoration:none;border-bottom:1px dashed #9db8ec}a.lnk:hover{color:#1d6ff2}
+h2 .ms{font-size:13px}.src{font-size:12px;color:var(--muted);margin-top:10px;padding-top:8px;border-top:1px dashed var(--line)}
+.lead{display:grid;gap:10px}
+.ld{display:grid;grid-template-columns:38px 1fr auto;gap:12px;align-items:center;padding:12px 14px}
+.ld .rk{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-weight:800;background:#eef3fc;color:#1d6ff2}
+.ld .rk.g1{background:#ffd54a;color:#7a5200}.ld .rk.g2{background:#d9e1ee;color:#3d4a63}.ld .rk.g3{background:#ffc9a3;color:#8a3d00}
+.ld .nm{font-weight:800}.ld .bar2{height:8px;border-radius:5px;background:#eef3fc;margin-top:6px;overflow:hidden}
+.ld .bar2 span{display:block;height:100%;border-radius:5px;background:linear-gradient(90deg,#1d6ff2,#6a4bff)}
+.ld .sm{font-size:20px;font-weight:800;text-align:right}
+#mod{position:fixed;inset:0;background:rgba(20,30,60,.45);display:none;z-index:50;align-items:flex-start;justify-content:center;padding:4vh 12px;overflow:auto}
+#mod.open{display:flex}
+#mod .box{background:#fff;border-radius:18px;max-width:980px;width:100%;padding:20px;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+#mod .mh{display:flex;align-items:center;gap:10px;margin-bottom:12px}#mod .mh h3{margin:0 auto 0 0;font-size:19px}
+#mod .x{border:0;background:#eef3fc;border-radius:10px;width:34px;height:34px;font-size:18px}
+.mini{display:flex;align-items:flex-end;gap:3px;height:90px;margin:8px 0 2px}.mini span{flex:1;background:linear-gradient(#6a4bff,#1d6ff2);border-radius:3px 3px 0 0;min-height:2px}
 @media (max-width:640px){.kpi .v{font-size:21px}.cal .d{min-height:58px;font-size:10px}.hw{padding:10px 12px}.wrap{padding:14px 12px 50px}}
 </style>
 </head>
 <body>
 <header><div class="hw">
-  <div class="brand"><i>⚡</i>Spark Plus</div>
+  <div class="brand">Spark Plus</div>
   <div class="tabs"><button data-t="daily" class="on">Kunlik nazorat</button><button data-t="nasiya">Nasiya</button></div>
   <a href="/logout">Chiqish</a>
 </div></header>
 <div class="wrap" id="app"><p class="muted">Yuklanmoqda…</p></div>
+<div id="mod" onclick="if(event.target===this)closeM()"><div class="box"><div class="mh"><h3 id="mt"></h3><button class="x" onclick="closeM()">✕</button></div><div id="mb"></div></div></div>
 
 <script>
 const $=s=>document.querySelector(s);
@@ -81,6 +99,23 @@ const f=x=>(Math.round(x||0)).toLocaleString('ru-RU').replace(/ /g,' ');
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const dd=s=>s?s.slice(8,10)+'.'+s.slice(5,7):'—';
 let TAB='daily', D=null, N=null, NV={view:'home'}, calMonth=null;
+/* MoySklad havolalari */
+const MSU='https://online.moysklad.ru/app/#';
+const PT={product:'good',variant:'feature',service:'service',bundle:'bundle'};
+const uz=d=>d.slice(8,10)+'.'+d.slice(5,7)+'.'+d.slice(0,4);
+const msDoc=(k,id)=>id?MSU+k+'/edit?id='+id:null;
+const msProd=(t,id)=>id?MSU+(PT[t]||'good')+'/edit?id='+id:null;
+const msCo=id=>id?MSU+'company/edit?id='+id:null;
+const msList=(k,d1,d2)=>MSU+k+'?global_periodFilter='+encodeURIComponent(uz(d1)+' 00:00:00,'+uz(d2||d1)+' 23:59:59');
+const L=(u,t)=>u?`<a class="lnk" href="${u}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${t}</a>`:t;
+const MS=(u,t='MoySklad ↗')=>u?`<a class="ms" href="${u}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${t}</a>`:'';
+const SRC=(txt,u)=>`<div class="src">Manba: ${txt} ${MS(u,'· MoySklad\'da ochish ↗')}</div>`;
+const KN={demand:'Отгрузки',salesreturn:'Возвраты покупателей',cashin:'Приходные ордера',cashout:'Расходные ордера',paymentin:'Входящие платежи',paymentout:'Исходящие платежи',supply:'Приёмки',loss:'Списания',enter:'Оприходования'};
+const PN=x=>L(msProd(x.t,x.id),esc(x.name))+' <span class="muted small">'+esc(x.code)+'</span>';
+function openM(t,h){$('#mt').innerHTML=t;$('#mb').innerHTML=h;$('#mod').classList.add('open');document.body.style.overflow='hidden';}
+function closeM(){$('#mod').classList.remove('open');document.body.style.overflow='';}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeM();});
+const docCols=k=>[{h:'Hujjat',f:x=>L(msDoc(k,x.id),'<b>'+esc(x.doc)+'</b>')},{h:'Vaqt',k:'time'},{h:'Kontragent',f:x=>L(msCo(x.aid),esc(x.client))},{h:'Xodim',k:'who'},{h:'Summa',n:1,f:x=>f(x.sum)},{h:'Izoh',f:x=>'<span class="small">'+esc(x.note)+'</span>'}];
 
 document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{
   document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
@@ -96,11 +131,12 @@ function render(){ TAB==='daily'?renderDaily():renderNasiya(); }
 function delta(a,b,inv){ if(!b) return ''; const p=(a-b)/Math.abs(b)*100; const good=inv?p<=0:p>=0;
   return `<span class="${good?'up':'down'}">${p>=0?'▲':'▼'} ${Math.abs(p).toFixed(0)}%</span> <span class="muted small">7 kun o'rtachasiga nisbatan</span>`;}
 
-function table(cols,rows,lim=10,id){
+function table(cols,rows,lim=10,id,click){
   if(!rows||!rows.length) return '<div class="muted small">Yo\'q</div>';
   id=id||('t'+Math.random().toString(36).slice(2));
   const head='<tr>'+cols.map(c=>`<th class="${c.n?'n':''}">${c.h}</th>`).join('')+'</tr>';
-  const body=rows.map((r,i)=>`<tr class="${i>=lim?'hid-'+id:''}" style="${i>=lim?'display:none':''}">`+cols.map(c=>`<td class="${c.n?'n':''}">${c.f?c.f(r):esc(r[c.k])}</td>`).join('')+'</tr>').join('');
+  if(click) window['rc_'+id]=i=>click(rows[i]);
+  const body=rows.map((r,i)=>`<tr class="${i>=lim?'hid-'+id:''} ${click?'clk':''}" style="${i>=lim?'display:none':''}" ${click?`onclick="rc_${id}(${i})"`:''}>`+cols.map(c=>`<td class="${c.n?'n':''}">${c.f?c.f(r):esc(r[c.k])}</td>`).join('')+'</tr>').join('');
   const more=rows.length>lim?`<button class="btn light more" onclick="document.querySelectorAll('.hid-${id}').forEach(e=>e.style.display='');this.remove()">Hammasini ko'rsatish (${rows.length})</button>`:'';
   return `<div class="tw"><table>${head}${body}</table></div>${more}`;
 }
@@ -110,13 +146,14 @@ function chart(series){
   const bw=(W-P*2)/n;
   let bars='',line='',labels='';
   series.forEach((s,i)=>{const x=P+i*bw, h=(s.sales/mx)*(H-P-20), y=H-P-h;
-    bars+=`<rect x="${x+2}" y="${y}" width="${bw-4}" height="${h}" rx="4" fill="url(#g)"><title>${dd(s.day)}: savdo ${f(s.sales)}, foyda ${f(s.profit)}</title></rect>`;
+    bars+=`<rect x="${x+2}" y="${y}" width="${bw-4}" height="${h}" rx="4" fill="url(#g)" style="cursor:pointer" onclick="dayM(${i})"><title>${dd(s.day)}: savdo ${f(s.sales)}, foyda ${f(s.profit)}</title></rect>`;
     const py=H-P-(s.profit/mx)*(H-P-20); line+=(i?'L':'M')+(x+bw/2)+' '+py;
     if(i%3===0||i===n-1) labels+=`<text x="${x+bw/2}" y="${H-12}" font-size="12" text-anchor="middle" fill="#6b7591">${dd(s.day)}</text>`;});
   return `<svg class="chart" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none"><defs><linearGradient id="g" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#6a4bff"/><stop offset="1" stop-color="#2f7cf6"/></linearGradient></defs>${bars}<path d="${line}" fill="none" stroke="#12b76a" stroke-width="3"/>${labels}</svg>
   <div class="legend"><span><b style="background:#4f63fb"></b>Savdo</span><span><b style="background:#12b76a"></b>Foyda</span><span>Eng yuqori kun: ${f(mx)} so'm</span></div>`;
 }
 
+function kcard(c,l,v,sub,fn){return `<div class="card kpi go" style="--c:var(--${c})" onclick="${fn}"><span class="hint">ochish ›</span><div class="l">${l}</div><div class="v">${v}</div><div class="small">${sub}</div></div>`;}
 function renderDaily(){
   const app=$('#app');
   if(!D){app.innerHTML='<p class="muted">Yuklanmoqda…</p>';return}
@@ -126,42 +163,103 @@ function renderDaily(){
     <button class="btn" id="rerun">${D.running?'Hisoblanmoqda…':'Qayta hisoblash'}</button></div>`;
   if(D.error) top+=`<div class="err">Xato: ${esc(D.error)}</div>`;
   if(!r){app.innerHTML=top+'<div class="note">Hisobot tayyorlanmoqda. Birinchi marta 3–6 daqiqa ketadi, sahifa o\'zi yangilanadi.</div>';bindRerun();return}
-  const k=r.kpi;
-  let h=top+`<div class="grid k4">
-    <div class="card kpi" style="--c:var(--blue)"><div class="l">Savdo</div><div class="v">${f(k.sales)}</div><div class="small">${delta(k.sales,k.sales7)}</div></div>
-    <div class="card kpi" style="--c:var(--green)"><div class="l">Foyda</div><div class="v">${f(k.profit)}</div><div class="small">${delta(k.profit,k.profit7)}</div></div>
-    <div class="card kpi" style="--c:var(--violet)"><div class="l">Marja</div><div class="v">${k.margin}%</div><div class="small muted">7 kunda: ${k.margin7}%</div></div>
-    <div class="card kpi" style="--c:var(--orange)"><div class="l">Qaytarishlar</div><div class="v">${f(k.returns)}</div><div class="small">${delta(k.returns,k.returns7,true)}</div></div>
+  const k=r.kpi, M=r.month;
+  let h=top;
+  if(M){
+    const mx=Math.max(...M.employees.map(e=>e.sales),1);
+    h+=`<h2 style="margin-top:6px">Oylik reyting · ${dd(M.from)} – ${dd(M.to)} <span class="pill blue">kim ko'p sotyapti</span></h2>
+    <div class="grid k4">
+      ${kcard('blue','Oylik savdo',f(M.sales),'<span class="muted">'+M.count+' ta sotuv</span>',"monthM()")}
+      ${kcard('green','Oylik foyda',f(M.profit),'<span class="muted">marja '+M.margin+'%</span>',"monthM()")}
+      ${kcard('orange','Oylik qaytarish',f(M.returns),'<span class="muted">savdoning '+(M.sales?(M.returns/M.sales*100).toFixed(1):0)+'%</span>',"monthM()")}
+    </div>
+    <div class="lead" style="margin-top:14px">${M.employees.filter(e=>e.sales||e.returns).map((e,i)=>`<div class="card ld go" onclick="empM(${i})">
+      <div class="rk ${i<3?'g'+(i+1):''}">${i+1}</div>
+      <div><div class="nm">${esc(e.name)}</div><div class="small muted">${e.count} ta sotuv · foyda ${f(e.profit)} · marja ${e.margin}% · ulushi ${M.sales?(e.sales/M.sales*100).toFixed(1):0}%</div>
+      <div class="bar2"><span style="width:${e.sales/mx*100}%"></span></div></div>
+      <div class="sm">${f(e.sales)}<div class="small muted" style="font-weight:600">so'm ›</div></div></div>`).join('')}</div>
+    ${SRC('MoySklad → Прибыльность → по сотрудникам, '+uz(M.from)+' – '+uz(M.to),msList('demand',M.from,M.to))}`;
+  }
+  h+=`<h2>Kecha · ${uz(r.day)}</h2><div class="grid k4">
+    ${kcard('blue','Savdo',f(k.sales),delta(k.sales,k.sales7),"salesM()")}
+    ${kcard('green','Foyda',f(k.profit),delta(k.profit,k.profit7),"salesM()")}
+    ${kcard('violet','Marja',k.margin+'%','<span class="muted">7 kunda: '+k.margin7+'%</span>',"salesM()")}
+    ${kcard('orange','Qaytarishlar',f(k.returns),delta(k.returns,k.returns7,true),"docsM('salesreturn')")}
   </div>
   <div class="grid k4" style="margin-top:14px">
-    <div class="card kpi" style="--c:var(--red)"><div class="l">Ziyonga sotuv</div><div class="v">${f(r.loss_total)}</div><div class="small muted">${r.loss_sales.length} ta tovar</div></div>
-    <div class="card kpi" style="--c:var(--teal)"><div class="l">Qarzga sotildi (kecha)</div><div class="v">${f(r.credit_total)}</div><div class="small muted">${r.credit.length} ta otgruzka</div></div>
-    <div class="card kpi" style="--c:var(--pink)"><div class="l">Umumiy mijoz qarzi</div><div class="v">${f(r.debt_total)}</div><div class="small muted">Muddati o'tgan: ${f(r.overdue_total)}</div></div>
-    <div class="card kpi" style="--c:var(--yellow)"><div class="l">O'lik zaxira (60 kun)</div><div class="v">${f(r.dead_value)}</div><div class="small muted">${r.dead_n} ta tovar</div></div>
+    ${kcard('red','Ziyonga sotuv',f(r.loss_total),'<span class="muted">'+r.loss_sales.length+' ta tovar</span>',"listM('loss')")}
+    ${kcard('teal','Qarzga sotildi (kecha)',f(r.credit_total),'<span class="muted">'+r.credit.length+' ta otgruzka</span>',"listM('credit')")}
+    ${kcard('pink','Umumiy mijoz qarzi',f(r.debt_total),'<span class="muted">Muddati o\'tgan: '+f(r.overdue_total)+'</span>',"listM('debt')")}
+    ${kcard('yellow','O\'lik zaxira (60 kun)',f(r.dead_value),'<span class="muted">'+r.dead_n+' ta tovar</span>',"listM('dead')")}
   </div>
-  <div class="small muted" style="margin-top:6px">Summalar so'mda. Savdo va foyda MoySklad "Прибыльность" hisobotidan, qaytarishlar ayirilgan.</div>
-  <h2>30 kunlik savdo</h2><div class="card">${chart(r.series)}</div>
-  <h2>Xodimlar</h2><div class="card">${table([
+  <div class="small muted" style="margin-top:6px">Har bir kartani, qatorni yoki grafik ustunini bosing: ichida nimadan tashkil topgani va MoySklad'dagi manbasi chiqadi. Summalar so'mda.</div>
+  <h2>30 kunlik savdo <span class="muted small">ustunni bosing</span></h2><div class="card">${chart(r.series)}${SRC('MoySklad → Прибыльность (har kun alohida)',msList('demand',r.series[0].day,r.day))}</div>
+  <h2>Xodimlar · kecha <span class="muted small">qatorni bosing</span></h2><div class="card">${table([
     {h:'Xodim',k:'name'},{h:'Savdo',n:1,f:x=>f(x.sales)},{h:'Foyda',n:1,f:x=>f(x.profit)},{h:'Marja',n:1,f:x=>x.margin+'%'},
-    {h:'Sotuvlar',n:1,k:'count'},{h:'Qaytarish',n:1,f:x=>f(x.returns)+' <span class="muted small">('+x.rcount+')</span>'}],r.employees,20)}</div>
+    {h:'Sotuvlar',n:1,k:'count'},{h:'Qaytarish',n:1,f:x=>f(x.returns)+' <span class="muted small">('+x.rcount+')</span>'}],r.employees,20,'emp',x=>whoM(x.name))}
+    ${SRC('MoySklad → Прибыльность → по сотрудникам, '+uz(r.day),msList('demand',r.day))}</div>
   <h2>Kim nima qildi <span class="pill gray">hujjatlar soni</span></h2><div class="card">${table(
-    [{h:'Xodim',k:'name'}].concat(r.acts.map(a=>({h:a[1],n:1,f:x=>x[a[0]]?`<b>${x[a[0]]}</b><div class="muted small">${f(x[a[0]+'_sum'])}</div>`:'<span class="muted">—</span>'}))),r.activity,20)}</div>
-  <div class="note">Qaytarishlar: jami <b>${r.returns.count}</b> ta (${f(r.returns.sum)} so'm), shundan Admin: <b>${r.returns.admin_count}</b> ta (${f(r.returns.admin_sum)} so'm)${r.returns.admin_notfound?' — seshanba/shanba bo\'lgani uchun bular <b>"tovar topilmagan (yo\'q)"</b> hisoblanadi.':'.'}</div>
-  <h2>Ziyonga sotilgan tovarlar <span class="pill red">${r.loss_sales.length}</span></h2><div class="card">${table([
-    {h:'Tovar',f:x=>esc(x.name)+' <span class="muted small">'+esc(x.code)+'</span>'},{h:'Soni',n:1,k:'q'},{h:'Sotish narxi',n:1,f:x=>f(x.price)},{h:'Tannarx',n:1,f:x=>f(x.costp)},{h:'Zarar',n:1,f:x=>'<span class="down">'+f(x.loss)+'</span>'}],r.loss_sales)}</div>
+    [{h:'Xodim',k:'name'}].concat(r.acts.map(a=>({h:a[1],n:1,f:x=>x[a[0]]?`<b>${x[a[0]]}</b><div class="muted small">${f(x[a[0]+'_sum'])}</div>`:'<span class="muted">—</span>'}))),r.activity,20,'act',x=>whoM(x.name))}
+    <div class="src">Manba: MoySklad hujjatlari, ${uz(r.day)} · ${r.acts.map(a=>MS(msList(a[0],r.day),a[1]+' ↗')).join(' · ')}</div></div>
+  <div class="note go" onclick="docsM('salesreturn')">Qaytarishlar: jami <b>${r.returns.count}</b> ta (${f(r.returns.sum)} so'm), shundan Admin: <b>${r.returns.admin_count}</b> ta (${f(r.returns.admin_sum)} so'm)${r.returns.admin_notfound?' — seshanba/shanba bo\'lgani uchun bular <b>"tovar topilmagan (yo\'q)"</b> hisoblanadi.':'.'} <span class="ms">ro'yxat ›</span></div>
+  <h2>Ziyonga sotilgan tovarlar <span class="pill red">${r.loss_sales.length}</span></h2><div class="card">${lossT(r.loss_sales)}${SRC('MoySklad → Прибыльность → по товарам, '+uz(r.day))}</div>
   <h2>Tugagan, lekin talab bor <span class="pill orange">${r.reorder_n}</span> <span class="muted small">zakaz qilish kerak</span></h2><div class="card">${table([
-    {h:'Tovar',f:x=>esc(x.name)+' <span class="muted small">'+esc(x.code)+'</span>'},{h:'30 kunda sotildi',n:1,k:'q30'},{h:'Qoldiq',n:1,k:'stock'},{h:'30 kunlik foyda',n:1,f:x=>f(x.lost_profit)}],r.reorder)}</div>
+    {h:'Tovar',f:PN},{h:'30 kunda sotildi',n:1,k:'q30'},{h:'Qoldiq',n:1,k:'stock'},{h:'30 kunlik foyda',n:1,f:x=>f(x.lost_profit)}],r.reorder)}${SRC('MoySklad → Остатки + Прибыльность по товарам (30 kun)')}</div>
   <h2>Ketishi to'xtagan <span class="pill blue">${r.stopped_n}</span> <span class="muted small">oldin sotilardi, 14 kunda bitta ham ketmadi</span></h2><div class="card">${table([
-    {h:'Tovar',f:x=>esc(x.name)+' <span class="muted small">'+esc(x.code)+'</span>'},{h:'Oldingi oyda (o\'rtacha)',n:1,f:x=>f(x.per_month)},{h:'Qoldiq',n:1,k:'stock'}],r.stopped)}</div>
-  <h2>O'lik zaxira <span class="pill">${r.dead_n}</span> <span class="muted small">60 kunda umuman sotilmagan · ${f(r.dead_value)} so'm</span></h2><div class="card">${table([
-    {h:'Tovar',f:x=>esc(x.name)+' <span class="muted small">'+esc(x.code)+'</span>'},{h:'Qoldiq',n:1,k:'stock'},{h:'Qiymati (tannarx)',n:1,f:x=>f(x.value)}],r.dead)}</div>
-  <h2>Kecha qarzga sotilganlar <span class="pill">${f(r.credit_total)}</span></h2><div class="card">${table([
-    {h:'Otgruzka',k:'doc'},{h:'Sotuvchi',k:'seller'},{h:'Summa',n:1,f:x=>f(x.sum)},{h:'To\'lanmagan',n:1,f:x=>'<b>'+f(x.unpaid)+'</b>'},{h:'Izoh',f:x=>'<span class="small">'+esc(x.note)+'</span>'}],r.credit)}</div>
-  <h2>Eng katta qarzdorlar</h2><div class="card">${table([
-    {h:'Mijoz',k:'name'},{h:'Sotuvchi',k:'seller'},{h:'Qarz',n:1,f:x=>'<b>'+f(x.debt)+'</b>'},{h:'Muddat',n:1,f:x=>dd(x.due)}],r.debtors,15)}</div>
+    {h:'Tovar',f:PN},{h:'Oldingi oyda (o\'rtacha)',n:1,f:x=>f(x.per_month)},{h:'Qoldiq',n:1,k:'stock'}],r.stopped)}${SRC('MoySklad → Прибыльность по товарам (14 va 76 kun) + Остатки')}</div>
+  <h2>O'lik zaxira <span class="pill">${r.dead_n}</span> <span class="muted small">60 kunda umuman sotilmagan · ${f(r.dead_value)} so'm</span></h2><div class="card">${deadT(r.dead)}${SRC('MoySklad → Остатки + Прибыльность по товарам (60 kun)')}</div>
+  <h2>Kecha qarzga sotilganlar <span class="pill">${f(r.credit_total)}</span></h2><div class="card">${creditT(r.credit)}${SRC('MoySklad → Отгрузки, '+uz(r.day)+' (to\'lanmagan qismi)',msList('demand',r.day))}</div>
+  <h2>Eng katta qarzdorlar</h2><div class="card">${debtT(r.debtors)}${SRC('MoySklad → Взаиморасчеты (Nasiya bo\'limi)')}</div>
   <h2>Spisaniyalar <span class="pill">${f(r.losses_total)}</span></h2><div class="card">${table([
-    {h:'Hujjat',k:'doc'},{h:'Kim',k:'who'},{h:'Summa',n:1,f:x=>f(x.sum)},{h:'Izoh',f:x=>'<span class="small">'+esc(x.note)+'</span>'}],r.losses)}</div>`;
+    {h:'Hujjat',f:x=>L(msDoc('loss',x.id),esc(x.doc))},{h:'Kim',k:'who'},{h:'Summa',n:1,f:x=>f(x.sum)},{h:'Izoh',f:x=>'<span class="small">'+esc(x.note)+'</span>'}],r.losses)}${SRC('MoySklad → Списания, '+uz(r.day),msList('loss',r.day))}</div>`;
   app.innerHTML=h; bindRerun();
+}
+const lossT=(rows,lim)=>table([{h:'Tovar',f:PN},{h:'Soni',n:1,k:'q'},{h:'Sotish narxi',n:1,f:x=>f(x.price)},{h:'Tannarx',n:1,f:x=>f(x.costp)},{h:'Zarar',n:1,f:x=>'<span class="down">'+f(x.loss)+'</span>'}],rows,lim);
+const deadT=(rows,lim)=>table([{h:'Tovar',f:PN},{h:'Qoldiq',n:1,k:'stock'},{h:'Qiymati (tannarx)',n:1,f:x=>f(x.value)}],rows,lim);
+const creditT=(rows,lim)=>table([{h:'Otgruzka',f:x=>L(msDoc('demand',x.id),'<b>'+esc(x.doc)+'</b>')},{h:'Mijoz',f:x=>L(msCo(x.aid),esc(x.client||''))},{h:'Sotuvchi',k:'seller'},{h:'Summa',n:1,f:x=>f(x.sum)},{h:'To\'lanmagan',n:1,f:x=>'<b>'+f(x.unpaid)+'</b>'},{h:'Izoh',f:x=>'<span class="small">'+esc(x.note)+'</span>'}],rows,lim);
+const debtT=(rows,lim)=>table([{h:'Mijoz',f:x=>L(msCo(x.id),'<b>'+esc(x.name)+'</b>')},{h:'Sotuvchi',k:'seller'},{h:'Qarz',n:1,f:x=>'<b>'+f(x.debt)+'</b>'},{h:'Muddat',n:1,f:x=>dd(x.due)}],rows,lim||15);
+
+/* ----- tafsilot oynalari ----- */
+function monthM(){const M=D.report.month;
+  openM(`Oylik savdo · ${uz(M.from)} – ${uz(M.to)}`,`<div class="grid k4">
+   <div class="card kpi" style="--c:var(--blue)"><div class="l">Savdo</div><div class="v">${f(M.sales)}</div></div>
+   <div class="card kpi" style="--c:var(--green)"><div class="l">Foyda</div><div class="v">${f(M.profit)}</div><div class="small muted">marja ${M.margin}%</div></div>
+   <div class="card kpi" style="--c:var(--orange)"><div class="l">Qaytarish</div><div class="v">${f(M.returns)}</div></div></div>
+   <h2>Xodimlar bo'yicha <span class="muted small">qatorni bosing</span></h2>${table([{h:'#',f:x=>M.employees.indexOf(x)+1},{h:'Xodim',k:'name'},{h:'Savdo',n:1,f:x=>'<b>'+f(x.sales)+'</b>'},{h:'Ulushi',n:1,f:x=>(M.sales?(x.sales/M.sales*100).toFixed(1):0)+'%'},{h:'Foyda',n:1,f:x=>f(x.profit)},{h:'Marja',n:1,f:x=>x.margin+'%'},{h:'Sotuvlar',n:1,k:'count'},{h:'Qaytarish',n:1,f:x=>f(x.returns)}],M.employees,30,'mm',x=>empM(M.employees.indexOf(x)))}
+   ${SRC('MoySklad → Прибыльность → по сотрудникам, '+uz(M.from)+' – '+uz(M.to),msList('demand',M.from,M.to))}`);}
+function empM(i){const M=D.report.month, e=M.employees[i];
+  const days=[];for(let d=new Date(M.from+'T00:00:00Z');d<=new Date(M.to+'T00:00:00Z');d.setUTCDate(d.getUTCDate()+1)){const k=d.toISOString().slice(0,10);days.push([k,(e.days||{})[k]||0]);}
+  const mx=Math.max(...days.map(x=>x[1]),1), best=days.reduce((a,b)=>b[1]>a[1]?b:a,days[0]||['',0]);
+  openM(`${i+1}-o'rin · ${esc(e.name)}`,`<div class="grid k4">
+   <div class="card kpi" style="--c:var(--blue)"><div class="l">Oylik savdo</div><div class="v">${f(e.sales)}</div><div class="small muted">umumiy savdoning ${M.sales?(e.sales/M.sales*100).toFixed(1):0}%</div></div>
+   <div class="card kpi" style="--c:var(--green)"><div class="l">Foyda</div><div class="v">${f(e.profit)}</div><div class="small muted">marja ${e.margin}%</div></div>
+   <div class="card kpi" style="--c:var(--violet)"><div class="l">Sotuvlar soni</div><div class="v">${e.count}</div><div class="small muted">o'rtacha chek ${f(e.count?e.sales/e.count:0)}</div></div>
+   <div class="card kpi" style="--c:var(--orange)"><div class="l">Qaytarish</div><div class="v">${f(e.returns)}</div><div class="small muted">${e.rcount} ta</div></div></div>
+   <h2>Kunma-kun savdo</h2><div class="card"><div class="mini">${days.map(x=>`<span style="height:${x[1]/mx*100}%" title="${dd(x[0])}: ${f(x[1])}"></span>`).join('')}</div>
+   <div class="row small muted"><span>${dd(M.from)}</span><span>Eng yaxshi kun: ${dd(best[0])} · ${f(best[1])}</span><span>${dd(M.to)}</span></div></div>
+   ${table([{h:'Kun',f:x=>dd(x[0])},{h:'Savdo',n:1,f:x=>x[1]?f(x[1]):'<span class="muted">—</span>'},{h:'',f:x=>MS(msList('demand',x[0]),'otgruzkalar ↗')}],days.slice().reverse(),7)}
+   ${SRC('MoySklad → Прибыльность → по сотрудникам. Otgruzkalar ro\'yxatida «Владелец-сотрудник: '+esc(e.name)+'» filtrini tanlang',msList('demand',M.from,M.to))}`);}
+function salesM(){const r=D.report;
+  openM(`Kecha savdo · ${uz(r.day)}`,`<div class="small muted">Savdo ${f(r.kpi.sales)} · foyda ${f(r.kpi.profit)} · marja ${r.kpi.margin}%</div>
+   <h2>Xodimlar bo'yicha</h2>${table([{h:'Xodim',k:'name'},{h:'Savdo',n:1,f:x=>'<b>'+f(x.sales)+'</b>'},{h:'Foyda',n:1,f:x=>f(x.profit)},{h:'Marja',n:1,f:x=>x.margin+'%'},{h:'Sotuvlar',n:1,k:'count'}],r.employees,20,'se',x=>whoM(x.name))}
+   <h2>Otgruzkalar <span class="pill">${(r.docs.demand||[]).length}</span></h2>${table(docCols('demand'),r.docs.demand||[],15)}
+   ${SRC('MoySklad → Прибыльность + Отгрузки, '+uz(r.day),msList('demand',r.day))}`);}
+function docsM(kind){const r=D.report, rows=r.docs[kind]||[];
+  openM(`${KN[kind]} · ${uz(r.day)} · ${rows.length} ta · ${f(rows.reduce((a,x)=>a+x.sum,0))} so'm`,table(docCols(kind),rows,30)+SRC('MoySklad → '+KN[kind]+', '+uz(r.day),msList(kind,r.day)));}
+function whoM(name){const r=D.report;let h='';
+  r.acts.forEach(a=>{const rows=(r.docs[a[0]]||[]).filter(x=>x.who===name);
+    if(rows.length) h+=`<h2>${a[1]} <span class="pill">${rows.length} ta · ${f(rows.reduce((s,x)=>s+x.sum,0))}</span> ${MS(msList(a[0],r.day))}</h2>${table(docCols(a[0]).filter(c=>c.h!=='Xodim'),rows,10)}`;});
+  const e=r.employees.find(x=>x.name===name);
+  openM(`${esc(name)} · ${uz(r.day)}`,(e?`<div class="small muted">Savdo ${f(e.sales)} · foyda ${f(e.profit)} · marja ${e.margin}% · ${e.count} ta sotuv</div>`:'')+(h||'<div class="muted">Kecha hujjat yo\'q</div>')+SRC('MoySklad hujjatlari, '+uz(r.day)));}
+function dayM(i){const r=D.report, s=r.series[i];
+  openM(`${uz(s.day)} · savdo ${f(s.sales)}`,`<div class="small muted">Foyda ${f(s.profit)} · qaytarish ${f(s.returns)}</div>
+   ${table([{h:'Xodim',k:'name'},{h:'Savdo',n:1,f:x=>'<b>'+f(x.sales)+'</b>'},{h:'Foyda',n:1,f:x=>f(x.profit)}],s.emps||[],20)}
+   ${SRC('MoySklad → Прибыльность → по сотрудникам, '+uz(s.day),msList('demand',s.day))}`);}
+function listM(w){const r=D.report;
+  if(w==='loss') openM(`Ziyonga sotilgan tovarlar · ${f(r.loss_total)} so'm`,lossT(r.loss_sales,50)+SRC('MoySklad → Прибыльность → по товарам, '+uz(r.day)+'. Tovar nomini bossangiz kartasi ochiladi'));
+  if(w==='credit') openM(`Kecha qarzga sotilganlar · ${f(r.credit_total)} so'm`,creditT(r.credit,50)+SRC('MoySklad → Отгрузки, '+uz(r.day),msList('demand',r.day)));
+  if(w==='debt') openM(`Eng katta qarzdorlar · jami ${f(r.debt_total)} so'm`,debtT(r.debtors,50)+`<div class="note small">To'liq ro'yxat va har bir sotuvchi bo'yicha — <b>Nasiya</b> bo'limida.</div>`+SRC('MoySklad → Деньги → Взаиморасчеты'));
+  if(w==='dead') openM(`O'lik zaxira · ${r.dead_n} ta · ${f(r.dead_value)} so'm`,deadT(r.dead,50)+SRC('MoySklad → Остатки + Прибыльность по товарам (60 kun). Tovar nomini bossangiz kartasi ochiladi'));
 }
 function bindRerun(){const b=$('#rerun'); if(b) b.onclick=async()=>{b.disabled=true;b.textContent='Hisoblanmoqda…';
   await fetch('api/daily/run',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'}); poll();};}
@@ -199,12 +297,12 @@ function nHome(){
   const LB={over:"Muddati o'tgan",today:'Bugun',soon:'1–3 kun',week:'7 kungacha',later:'Keyinroq',none:'Muddatsiz'};
   const legend=Object.keys(SC).map(k=>`<span><b style="background:${SC[k]}"></b>${LB[k]}: ${f(parts[k])}</span>`).join('');
   let h=`<div class="grid k4">
-   <div class="card kpi" style="--c:var(--violet)"><div class="l">Umumiy qarz</div><div class="v">${f(total)}</div><div class="small muted">${N.customers.length} ta mijoz</div></div>
-   <div class="card kpi" style="--c:var(--red)"><div class="l">Muddati o'tgan</div><div class="v">${f(parts.over)}</div></div>
-   <div class="card kpi" style="--c:var(--orange)"><div class="l">Bugun kelishi kerak</div><div class="v">${f(parts.today)}</div></div>
-   <div class="card kpi" style="--c:var(--green)"><div class="l">Bugun keldi</div><div class="v">${f((N.days[N.today]||{}).income)}</div></div></div>
+   ${kcard('violet','Umumiy qarz',f(total),'<span class="muted">'+N.customers.length+' ta mijoz</span>',"nM('all')")}
+   ${kcard('red','Muddati o\'tgan',f(parts.over),'<span class="muted">mijozlar ro\'yxati</span>',"nM('over')")}
+   ${kcard('orange','Bugun kelishi kerak',f(parts.today),'<span class="muted">kimdan kutilmoqda</span>',"nM('today')")}
+   ${kcard('green','Bugun keldi',f((N.days[N.today]||{}).income),'<span class="muted">kim to\'ladi</span>',"nM('paid')")}</div>
    <div class="card" style="margin-top:14px">${segBar(parts,total||1)}<div class="legend" style="flex-wrap:wrap">${legend}</div></div>
-   <div class="note small">Muddat otgruzka izohidan olinadi. <b>"25.11"</b> kabi yozilgani — aniq. <b>"7 ga"</b> kabi yozilgani — taxminiy (oyning 7-kuni), jadvalda <span class="pill gray">taxminiy</span> belgisi bilan. Izohda sana bo'lmasa — "Muddatsiz".</div>
+   <div class="note small">Mijoz yoki otgruzka nomini bossangiz, MoySklad'da o'sha hujjat ochiladi. Muddat otgruzka izohidan olinadi. <b>"25.11"</b> kabi yozilgani — aniq. <b>"7 ga"</b> kabi yozilgani — taxminiy (oyning 7-kuni), jadvalda <span class="pill gray">taxminiy</span> belgisi bilan. Izohda sana bo'lmasa — "Muddatsiz".</div>
    <h2>Sotuvchilar</h2><div class="grid sellers">`;
   ss.forEach(s=>{h+=`<div class="card seller" onclick='NV={view:"seller",name:${JSON.stringify(s.name)}};render()'>
     <div class="nm">${esc(s.name)}</div><div class="muted small">${s.n} ta mijoz</div>
@@ -212,12 +310,22 @@ function nHome(){
     <div class="row"><span class="down">O'tgan: ${f(s.parts.over)}</span><span class="muted">Muddatsiz: ${f(s.parts.none)}</span></div></div>`;});
   return h+'</div>';
 }
-function docRows(c){return c.docs.map(x=>{const s=status(x.due,N.today);return `<tr><td>${esc(x.doc)}</td><td>${dd(x.ship)}</td><td class="n">${f(x.amount)}</td><td>${x.due?dd(x.due):'—'} <span class="pill ${s[2]}">${s[1]}</span>${x.due&&!x.exact?' <span class="pill gray">taxminiy</span>':''}</td><td class="small">${esc(x.note)}</td></tr>`}).join('');}
+function nM(w){const t=N.today;
+  const cols=[{h:'Mijoz',f:c=>L(msCo(c.id),'<b>'+esc(c.name)+'</b>')},{h:'Sotuvchi',k:'seller'},{h:'Qarz',n:1,f:c=>'<b>'+f(c.debt)+'</b>'},{h:'Eng yaqin muddat',f:c=>dd(c.due)}];
+  const src=SRC('MoySklad → Деньги → Взаиморасчеты + Отгрузки (muddat izohdan)');
+  if(w==='all') openM(`Umumiy qarz · ${N.customers.length} ta mijoz`,table(cols,N.customers,50)+src);
+  if(w==='over'){const cs=N.customers.map(c=>({...c,od:c.docs.filter(x=>x.due&&x.due<t).reduce((a,x)=>a+x.amount,0)})).filter(c=>c.od>0).sort((a,b)=>b.od-a.od);
+    openM(`Muddati o'tgan · ${cs.length} ta mijoz`,table([cols[0],cols[1],{h:'Muddati o\'tgan',n:1,f:c=>'<span class="down">'+f(c.od)+'</span>'},cols[2]],cs,50)+src);}
+  const it=(N.days[t]||{}).items||[];
+  if(w==='today') openM(`Bugun kelishi kerak · ${dd(t)}`,table([{h:'Mijoz',f:i=>L(msCo(i.cid),esc(i.client))},{h:'Sotuvchi',k:'seller'},{h:'Otgruzka',f:i=>L(msDoc('demand',i.id),esc(i.doc))},{h:'Summa',n:1,f:i=>f(i.amount)},{h:'Keldi',n:1,f:i=>f(i.paid_that_day)}],it,50)+src);
+  if(w==='paid') openM(`Bugun to'laganlar · ${dd(t)}`,table([{h:'Mijoz',f:i=>L(msCo(i.cid),esc(i.client))},{h:'Sotuvchi',k:'seller'},{h:'Summa',n:1,f:i=>'<b>'+f(i.amount)+'</b>'}],((N.payers||{})[t]||[]).slice().sort((a,b)=>b.amount-a.amount),50)+SRC('MoySklad → Входящие платежи + Приходные ордера',msList('paymentin',t)));
+}
+function docRows(c){return c.docs.map(x=>{const s=status(x.due,N.today);return `<tr><td>${L(msDoc('demand',x.id),esc(x.doc))}</td><td>${dd(x.ship)}</td><td class="n">${f(x.amount)}</td><td>${x.due?dd(x.due):'—'} <span class="pill ${s[2]}">${s[1]}</span>${x.due&&!x.exact?' <span class="pill gray">taxminiy</span>':''}</td><td class="small">${esc(x.note)}</td></tr>`}).join('');}
 function nSeller(name){
   const cs=N.customers.filter(c=>c.seller===name);
   let h=`<button class="back" onclick="NV={view:'home'};render()">← Barcha sotuvchilar</button><h2>${esc(name)} · ${cs.length} ta mijoz · ${f(cs.reduce((a,c)=>a+c.debt,0))} so'm</h2><div class="card tw"><table><tr><th>Mijoz</th><th>Telefon</th><th class="n">Qarz</th><th>Eng yaqin muddat</th></tr>`;
   cs.forEach((c,i)=>{const s=status(c.due,N.today);
-    h+=`<tr class="clk" onclick="document.getElementById('s${i}').classList.toggle('open')"><td><b>${esc(c.name)}</b></td><td class="small">${esc(c.phone)}</td><td class="n"><b>${f(c.debt)}</b></td><td>${c.due?dd(c.due):'—'} <span class="pill ${s[2]}">${s[1]}</span></td></tr>
+    h+=`<tr class="clk" onclick="document.getElementById('s${i}').classList.toggle('open')"><td><b>${L(msCo(c.id),esc(c.name))}</b></td><td class="small">${esc(c.phone)}</td><td class="n"><b>${f(c.debt)}</b></td><td>${c.due?dd(c.due):'—'} <span class="pill ${s[2]}">${s[1]}</span></td></tr>
     <tr class="sub" id="s${i}"><td colspan="4"><table><tr><th>Otgruzka</th><th>Sana</th><th class="n">Qarzda</th><th>Muddat</th><th>Izoh</th></tr>${docRows(c)}</table></td></tr>`;});
   return h+'</table></div>';
 }
@@ -237,8 +345,8 @@ function shiftM(n){let [y,m]=calMonth.split('-').map(Number);m+=n;if(m<1){m=12;y
 function dayInfo(k){
   const x=N.days[k]||{income:0,due:0,items:[]}, pays=(N.payers||{})[k]||[];
   $('#dayinfo').innerHTML=`<h2>${dd(k)} · keldi <span class="inc">${f(x.income)}</span> · kelishi kerak edi <span class="due">${f(x.due)}</span></h2>
-   <div class="card">${table([{h:'Mijoz',k:'client'},{h:'Sotuvchi',k:'seller'},{h:'Otgruzka',k:'doc'},{h:'Summa',n:1,f:i=>f(i.amount)},{h:'Shu kuni to\'ladi',n:1,f:i=>i.paid_that_day?'<span class="inc">'+f(i.paid_that_day)+'</span>':'—'},{h:'Holat',f:i=>(i.open?'<span class="pill red">qarzda</span>':'<span class="pill green">yopilgan</span>')+(i.exact?'':' <span class="pill gray">taxminiy</span>')}],x.items||[],50)}</div>
-   <h2>Shu kuni to'laganlar</h2><div class="card">${table([{h:'Mijoz',k:'client'},{h:'Sotuvchi',k:'seller'},{h:'Summa',n:1,f:i=>f(i.amount)}],pays.sort((a,b)=>b.amount-a.amount),30)}</div>`;
+   <div class="card">${table([{h:'Mijoz',f:i=>L(msCo(i.cid),esc(i.client))},{h:'Sotuvchi',k:'seller'},{h:'Otgruzka',f:i=>L(msDoc('demand',i.id),esc(i.doc))},{h:'Summa',n:1,f:i=>f(i.amount)},{h:'Shu kuni to\'ladi',n:1,f:i=>i.paid_that_day?'<span class="inc">'+f(i.paid_that_day)+'</span>':'—'},{h:'Holat',f:i=>(i.open?'<span class="pill red">qarzda</span>':'<span class="pill green">yopilgan</span>')+(i.exact?'':' <span class="pill gray">taxminiy</span>')}],x.items||[],50)}</div>
+   <h2>Shu kuni to'laganlar</h2><div class="card">${table([{h:'Mijoz',f:i=>L(msCo(i.cid),esc(i.client))},{h:'Sotuvchi',k:'seller'},{h:'Summa',n:1,f:i=>f(i.amount)}],pays.sort((a,b)=>b.amount-a.amount),30)}</div>`;
   $('#dayinfo').scrollIntoView({behavior:'smooth'});
 }
 function nReport(){
@@ -249,7 +357,7 @@ function nReport(){
   const rows=Object.values(by).sort((a,b)=>b.due-a.due);
   let h=`<div class="note">Har kuni 18:25 dagi hisobot: har bir sotuvchi bo'yicha bugun <b>kelishi kerak</b>, <b>keldi</b> va <b>kelmadi</b>. Kelmagan qism ertangi rejaga qo'shiladi.</div>
   <div class="card">${table([{h:'Sotuvchi',k:'name'},{h:'Kelishi kerak',n:1,f:s=>f(s.due)},{h:'Keldi (muddatlilardan)',n:1,f:s=>'<span class="inc">'+f(s.got)+'</span>'},{h:'Kelmadi → ertaga',n:1,f:s=>'<span class="down">'+f(Math.max(s.due-s.got,0))+'</span>'},{h:'Bugun jami tushum',n:1,f:s=>f(s.paid)}],rows,30)}</div>
-  <h2>Bugun kelmaganlar</h2><div class="card">${table([{h:'Mijoz',k:'client'},{h:'Sotuvchi',k:'seller'},{h:'Otgruzka',k:'doc'},{h:'Kutilgan',n:1,f:i=>f(i.amount)},{h:'Keldi',n:1,f:i=>f(i.paid_that_day)}],(x.items||[]).filter(i=>(i.paid_that_day||0)<i.amount),50)}</div>`;
+  <h2>Bugun kelmaganlar</h2><div class="card">${table([{h:'Mijoz',f:i=>L(msCo(i.cid),esc(i.client))},{h:'Sotuvchi',k:'seller'},{h:'Otgruzka',f:i=>L(msDoc('demand',i.id),esc(i.doc))},{h:'Kutilgan',n:1,f:i=>f(i.amount)},{h:'Keldi',n:1,f:i=>f(i.paid_that_day)}],(x.items||[]).filter(i=>(i.paid_that_day||0)<i.amount),50)}</div>`;
   return h;
 }
 load(); setInterval(async()=>{N=await getJ('api/nasiya'); if(TAB==='nasiya' && NV.view!=='cal') render();},300000);
