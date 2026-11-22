@@ -1,0 +1,17 @@
+<!doctype html><html lang="uz"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Spark Plus · Kirish</title>
+<style>
+*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
+background:radial-gradient(1200px 600px at 10% 0%,#ffe7a3 0,transparent 60%),radial-gradient(900px 600px at 100% 100%,#bfe3ff 0,transparent 60%),#f6f8fc;color:#1b2440}
+form{background:#fff;padding:32px 28px;border-radius:20px;width:min(360px,92vw);box-shadow:0 20px 60px rgba(30,60,120,.15)}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:22px;margin-bottom:6px}
+.logo i{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#ffb800,#ff6a00);display:grid;place-items:center;color:#fff;font-style:normal}
+p{color:#6b7591;margin:0 0 22px}label{display:block;font-size:13px;font-weight:600;margin:12px 0 6px}
+input{width:100%;padding:12px 14px;border:1.5px solid #dfe5f0;border-radius:12px;font-size:16px}input:focus{outline:none;border-color:#2f7cf6}
+button{margin-top:20px;width:100%;padding:13px;border:0;border-radius:12px;background:linear-gradient(135deg,#2f7cf6,#6a4bff);color:#fff;font-size:16px;font-weight:700;cursor:pointer}
+.err{color:#e5383b;font-weight:600;margin-top:12px;min-height:20px}
+</style></head><body>
+<form method="post"><div class="logo"><i>⚡</i>Spark Plus</div><p>Boshqaruv paneli</p>
+<label>Login</label><input name="u" autocomplete="username" autofocus>
+<label>Parol</label><input name="p" type="password" autocomplete="current-password" required>
+<button>Kirish</button><div class="err">{{ERR}}</div></form></body></html>

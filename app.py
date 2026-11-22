@@ -1,165 +1,159 @@
-# Spark Plus nasiya — MoySklad "Взаиморасчеты" asosidagi dashboard
-import os, re, time, base64, threading
-from datetime import datetime, timedelta, timezone
+"""Spark Plus · Boshqaruv: kunlik nazorat + nasiya (bitta sayt)."""
+import os, time, json, hashlib, threading, traceback, hmac
 import requests
-from flask import Flask, jsonify, request, Response, send_file
+from flask import Flask, jsonify, request, session, redirect, send_file, Response
+import ms, nasiya, daily
 
-TOKEN = os.environ.get("MOYSKLAD_TOKEN", "")
-PASSWORD = os.environ.get("APP_PASSWORD", "")
-API = "https://api.moysklad.ru/api/remap/1.2"
-EXCLUDE = [w.strip().lower() for w in os.environ.get("EXCLUDE_WORDS", "oylik|xitoy|zavod|postav|ta'minot").split("|") if w.strip()]  # nomida shu so'z bo'lsa nasiyaga kirmaydi
-DAYS_BACK = 180
-REFRESH_SEC = 300
-TZ = timezone(timedelta(hours=5))  # Toshkent
 HERE = os.path.dirname(os.path.abspath(__file__))
-
-def today(add=0):
-    return (datetime.now(TZ) + timedelta(days=add)).strftime("%Y-%m-%d")
-
-def add_days(s, n):
-    return (datetime.strptime(s, "%Y-%m-%d") + timedelta(days=n)).strftime("%Y-%m-%d")
-
-def id_of(href):
-    return (href or "").split("/")[-1].split("?")[0]
-
-def href_of(obj):
-    return ((obj or {}).get("meta") or {}).get("href", "")
-
-def excluded(name):
-    n = (name or "").lower()
-    return any(w in n for w in EXCLUDE)
-
-S = requests.Session()
-S.headers.update({"Authorization": "Bearer " + TOKEN, "Accept-Encoding": "gzip"})
-
-def ms(path, params=None):
-    for i in range(6):
-        r = S.get(API + path, params=params, timeout=60)
-        if r.status_code == 429:
-            time.sleep(1.5 * (i + 1)); continue
-        if not r.ok:
-            raise RuntimeError(f"MoySklad {r.status_code}: {r.text[:300]}")
-        return r.json()
-    raise RuntimeError("MoySklad: juda ko'p so'rov (429)")
-
-def all_rows(path, extra=None):
-    rows, offset = [], 0
-    while True:
-        p = dict(extra or {}); p.update(limit=1000, offset=offset)
-        d = ms(path, p)
-        batch = d.get("rows") or []
-        rows += batch
-        if len(batch) < 1000: return rows
-        offset += 1000
-
-DUE_RE = re.compile(r"(\d{1,2})[./-](\d{1,2})(?:[./-](\d{2,4}))?")
-def parse_due(desc, ship):
-    if not desc: return None
-    for m in DUE_RE.finditer(desc):
-        day, mon = int(m.group(1)), int(m.group(2))
-        if not (1 <= day <= 31 and 1 <= mon <= 12): continue
-        year = int(m.group(3)) if m.group(3) else int(ship[:4])
-        if year < 100: year += 2000
-        try: due = datetime(year, mon, day).strftime("%Y-%m-%d")
-        except ValueError: continue
-        if not m.group(3) and due < add_days(ship, -2):  # dekabr -> yanvar
-            try: due = datetime(year + 1, mon, day).strftime("%Y-%m-%d")
-            except ValueError: continue
-        return due
-    return None
-
-cache = {"ready": False, "error": None}
-
-def build():
-    global cache
-    since = {"filter": f"moment>={add_days(today(), -DAYS_BACK)} 00:00:00"}
-    report = all_rows("/report/counterparty")
-    employees = all_rows("/entity/employee")
-    demands = all_rows("/entity/demand", since)
-    pays = all_rows("/entity/paymentin", since) + all_rows("/entity/cashin", since)
-
-    emp = {e["id"]: e.get("fullName") or e.get("name") for e in employees}
-    agents = {}
-    for row in report:
-        c = row.get("counterparty") or {}
-        aid = c.get("id") or id_of(href_of(c))
-        agents[aid] = {"name": c.get("name") or "—", "balance": (row.get("balance") or 0) / 100,
-                       "excluded": excluded(c.get("name"))}
-
-    planned, last_dem, last_due = [], {}, {}
-    for d in demands:
-        aid = id_of(href_of(d.get("agent")))
-        a = agents.get(aid)
-        if a and a["excluded"]: continue
-        seller = emp.get(id_of(href_of(d.get("owner"))), "Biriktirilmagan")
-        mom = d.get("moment", ""); ship = mom[:10]
-        if aid not in last_dem or mom > last_dem[aid]["moment"]:
-            last_dem[aid] = {"moment": mom, "seller": seller}
-        due = parse_due(d.get("description"), ship)
-        if due:
-            planned.append({"date": due, "agentId": aid, "amount": (d.get("sum") or 0) / 100, "doc": d.get("name"), "shipDate": ship})
-            if aid not in last_due or mom > last_due[aid]["moment"]:
-                last_due[aid] = {"moment": mom, "due": due, "doc": d.get("name"), "shipDate": ship}
-
-    payments = []
-    for p in pays:
-        aid = id_of(href_of(p.get("agent")))
-        a = agents.get(aid)
-        if not a or a["excluded"]: continue
-        payments.append({"date": p.get("moment", "")[:10], "agentId": aid, "amount": (p.get("sum") or 0) / 100})
-
-    seller_of = lambda aid: last_dem[aid]["seller"] if aid in last_dem else "Biriktirilmagan"
-    t = today(); tdt = datetime.strptime(t, "%Y-%m-%d")
-    debtors = []
-    for aid, a in agents.items():
-        if a["excluded"] or a["balance"] >= -0.5: continue
-        ld = last_due.get(aid)
-        due = ld["due"] if ld else None
-        days_left = (datetime.strptime(due, "%Y-%m-%d") - tdt).days if due else None
-        term = (datetime.strptime(ld["due"], "%Y-%m-%d") - datetime.strptime(ld["shipDate"], "%Y-%m-%d")).days if ld else None
-        debtors.append({"id": aid, "name": a["name"], "debt": -a["balance"], "seller": seller_of(aid),
-                        "due": due, "daysLeft": days_left, "term": term, "doc": ld["doc"] if ld else None})
-    debtors.sort(key=lambda x: -x["debt"])
-
-    ids = {p["agentId"] for p in planned} | {p["agentId"] for p in payments}
-    meta = {i: {"name": agents[i]["name"] if i in agents else "—", "seller": seller_of(i)} for i in ids}
-    cache = {"ready": True, "error": None, "updatedAt": datetime.now(timezone.utc).isoformat(), "today": t,
-             "debtors": debtors, "planned": planned, "payments": payments, "agents": meta, "excluded": EXCLUDE}
-    print(f"[{datetime.now(TZ)}] yangilandi: {len(debtors)} qarzdor", flush=True)
-
-lock = threading.Lock()
-def safe_build():
-    with lock:
-        try: build()
-        except Exception as e:
-            print("XATO:", e, flush=True); cache["error"] = str(e)
-
-def loop():
-    while True:
-        safe_build(); time.sleep(REFRESH_SEC)
-
-if TOKEN:
-    threading.Thread(target=loop, daemon=True).start()
-else:
-    cache["error"] = "MOYSKLAD_TOKEN o'rnatilmagan (Render -> Environment)"
+USER = os.environ.get("DASHBOARD_USER", "")
+PASSWORD = os.environ.get("APP_PASSWORD", "")
+CRON_SECRET = os.environ.get("CRON_SECRET", "")
+REPORT_HOUR = int(os.environ.get("REPORT_HOUR", "8"))
+REFRESH_SEC = int(os.environ.get("REFRESH_SECONDS", "300"))
 
 app = Flask(__name__)
+app.secret_key = os.environ.get("SECRET_KEY") or hashlib.sha256(("spark|" + PASSWORD + "|" + ms.token()).encode()).hexdigest()
+app.config.update(SESSION_COOKIE_HTTPONLY=True, SESSION_COOKIE_SAMESITE="Lax",
+                  SESSION_COOKIE_SECURE=bool(os.environ.get("RENDER")), PERMANENT_SESSION_LIFETIME=30 * 86400)
+
+DAILY = {"report": None, "error": None, "running": False, "last_day": None}
+_dlock = threading.Lock()
+
+
+def log(m): print(ms.now().strftime("%H:%M:%S"), m, flush=True)
+
+
+# ---------------- kirish ----------------
+OPEN = {"/login", "/health", "/cron/run"}
+
 
 @app.before_request
-def auth():
-    if not PASSWORD: return
-    h = request.headers.get("Authorization", "")
-    try: pw = base64.b64decode(h.replace("Basic ", "")).decode().split(":", 1)[1]
-    except Exception: pw = None
-    if pw != PASSWORD:
-        return Response("Parol kerak", 401, {"WWW-Authenticate": 'Basic realm="Spark Plus Nasiya"'})
+def guard():
+    if request.path in OPEN or not PASSWORD: return
+    if session.get("ok"): return
+    if request.path.startswith("/api/"): return jsonify({"error": "login"}), 401
+    return redirect("/login")
 
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    err = ""
+    if request.method == "POST":
+        u = request.form.get("u", "").strip(); p = request.form.get("p", "")
+        if hmac.compare_digest(p, PASSWORD) and (not USER or u.lower() == USER.lower()):
+            session.permanent = True; session["ok"] = True
+            return redirect("/")
+        time.sleep(1); err = "Login yoki parol noto'g'ri"
+    html = open(os.path.join(HERE, "login.html"), encoding="utf-8").read()
+    return html.replace("{{ERR}}", err)
+
+
+@app.get("/logout")
+def logout():
+    session.clear(); return redirect("/login")
+
+
+# ---------------- sahifalar ----------------
 @app.get("/")
 def index(): return send_file(os.path.join(HERE, "index.html"))
 
-@app.get("/api/data")
-def data(): return jsonify(cache)
 
-@app.post("/api/refresh")
-def refresh():
-    safe_build(); return jsonify({"ok": not cache.get("error"), "error": cache.get("error")})
+@app.get("/health")
+def health(): return "ok"
+
+
+@app.get("/api/nasiya")
+def api_nasiya():
+    S = nasiya.STORE
+    with S.lock:
+        return jsonify({"ready": S.ready, "error": S.error, "updated": S.updated, **(S.view or {})})
+
+
+@app.post("/api/nasiya/refresh")
+def api_nasiya_refresh():
+    safe_nasiya(); return jsonify({"ok": not nasiya.STORE.error, "error": nasiya.STORE.error})
+
+
+@app.get("/api/daily")
+def api_daily():
+    return jsonify({"running": DAILY["running"], "error": DAILY["error"], "report": DAILY["report"]})
+
+
+@app.post("/api/daily/run")
+def api_daily_run():
+    day = (request.json or {}).get("day") if request.is_json else None
+    threading.Thread(target=run_daily, kwargs={"day": day, "notify": False}, daemon=True).start()
+    return jsonify({"ok": True})
+
+
+@app.get("/cron/run")
+def cron_run():
+    if not CRON_SECRET or not hmac.compare_digest(request.args.get("key", ""), CRON_SECRET):
+        return Response("ruxsat yo'q", 403)
+    threading.Thread(target=run_daily, kwargs={"notify": True}, daemon=True).start()
+    return "boshlandi"
+
+
+# ---------------- fon ishlari ----------------
+def safe_nasiya():
+    try:
+        nasiya.STORE.refresh()
+    except Exception as e:
+        nasiya.STORE.error = str(e)[:300]; log("NASIYA XATO: " + traceback.format_exc()[-800:])
+
+
+def run_daily(day=None, notify=False):
+    if not _dlock.acquire(blocking=False): return
+    DAILY["running"] = True
+    try:
+        S = nasiya.STORE
+        r = daily.build(day, S.view if S.ready else None)
+        DAILY["report"] = r; DAILY["error"] = None
+        log(f"kunlik hisobot tayyor: {r['day']}")
+        if notify: send_telegram(r)
+    except Exception as e:
+        DAILY["error"] = str(e)[:300]; log("KUNLIK XATO: " + traceback.format_exc()[-800:])
+    finally:
+        DAILY["running"] = False; _dlock.release()
+
+
+def send_telegram(r):
+    tok, chat = os.environ.get("TELEGRAM_BOT_TOKEN"), os.environ.get("TELEGRAM_CHAT_ID")
+    if not tok or not chat: return
+    try:
+        requests.post(f"https://api.telegram.org/bot{tok}/sendMessage",
+                      json={"chat_id": chat, "text": daily.telegram_text(r, os.environ.get("PUBLIC_URL", ""))}, timeout=20)
+    except Exception as e:
+        log("Telegram xato: " + str(e))
+
+
+def loop():
+    while True:
+        safe_nasiya()
+        n = ms.now(); today = n.date().isoformat()
+        due = n.hour >= REPORT_HOUR and DAILY["last_day"] != today
+        if DAILY["report"] is None or due:
+            # Telegram faqat soat 08:xx dagi rejali ishga tushishda (server qayta yonganda takrorlanmaydi)
+            run_daily(notify=due and n.hour == REPORT_HOUR)
+            if due: DAILY["last_day"] = today
+        time.sleep(REFRESH_SEC if nasiya.STORE.ready else 30)
+
+
+_started = None
+_slock = threading.Lock()
+
+
+def start():
+    global _started
+    with _slock:
+        if _started == os.getpid(): return
+        _started = os.getpid()
+    if not ms.token():
+        nasiya.STORE.error = DAILY["error"] = "MOYSKLAD_TOKEN o'rnatilmagan (Render → Environment)"; return
+    threading.Thread(target=loop, daemon=True).start()
+
+
+start()
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))

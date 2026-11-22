@@ -1,14 +1,18 @@
-# Spark Plus · Nasiya
+# Spark Plus · Boshqaruv (kunlik nazorat + nasiya)
 
-MoySklad'dagi mijoz qarzlarini ko'rsatadigan dashboard: bosh sahifa, sotuvchilar, kalendar, kunlik hisobot (18:25).
-Ma'lumot har 5 daqiqada MoySklad'dan yangilanadi.
+Bitta sayt, bitta login:
+- **Kunlik nazorat** — har kuni 08:00 (Toshkent) kechagi kunni tekshiradi: savdo, foyda, marja, qaytarishlar (7 kun bilan solishtirib),
+  xodimlar, kim nima qildi, ziyonga sotuv, to'xtagan / tugagan / o'lik zaxira, qarzga sotuvlar, qarzdorlar, spisaniya.
+- **Nasiya** — har 5 daqiqada yangilanadi: sotuvchilar bo'yicha qarzlar, kalendar, bugungi (18:25) hisobot.
 
-## Sozlamalar (Render → Environment)
-- `MOYSKLAD_TOKEN` — MoySklad API tokeni (majburiy)
-- `APP_PASSWORD` — sahifaga kirish paroli (login maydoniga istalgan narsa, parolga shu)
-- `EXCLUDE_WORDS` — qarzdorlar ro'yxatidan chiqariladigan nomlar (standart: oylik|xitoy|zavod|postav|ta'minot)
+## Render → Environment
+- `MOYSKLAD_TOKEN` — MoySklad tokeni (majburiy)
+- `APP_PASSWORD` — kirish paroli (majburiy)
+- `DASHBOARD_USER` — login (ixtiyoriy; bo'sh bo'lsa faqat parol tekshiriladi)
+- `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`, `PUBLIC_URL` — 08:00 hisobotini Telegram'ga yuborish (ixtiyoriy)
+- `EXCLUDE_WORDS` — nasiyadan chiqariladigan nomlar (standart: oylik|xitoy|zavod|postav|ta'minot|Dilshodjon 1008|Xakimjon 0998)
 
-Sizdan tovar sotib olgan kontragentlar (postavshiklar) avtomatik chiqarib tashlanadi.
+Token va parollar kodda yo'q — faqat Render sozlamalarida.
 
-## Muddat qanday yoziladi
-Sotuvchi otgruzka izohiga sanani yozadi: `15.11` yoki `15.11.2026`.
+## Muddat yozish
+Otgruzka izohiga: `25.11` (aniq). `7 ga` ham tushuniladi, lekin "taxminiy" deb belgilanadi.
