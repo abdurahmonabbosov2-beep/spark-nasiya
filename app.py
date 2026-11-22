@@ -1,5 +1,5 @@
 """Spark Plus · Boshqaruv: kunlik nazorat + nasiya (bitta sayt)."""
-import os, time, json, hashlib, threading, traceback, hmac
+import os, sys, time, json, hashlib, threading, traceback, hmac
 import requests
 from flask import Flask, jsonify, request, session, redirect, send_file, Response
 import ms, nasiya, daily
@@ -29,6 +29,7 @@ OPEN = {"/login", "/health", "/cron/run"}
 
 @app.before_request
 def guard():
+    start()  # fon ishi shu jarayonda ishlayotganiga ishonch (gunicorn --preload / fork holati)
     if request.path in OPEN or not PASSWORD: return
     if session.get("ok"): return
     if request.path.startswith("/api/"): return jsonify({"error": "login"}), 401
@@ -145,15 +146,20 @@ _slock = threading.Lock()
 
 def start():
     global _started
+    if _started == os.getpid(): return
     with _slock:
         if _started == os.getpid(): return
         _started = os.getpid()
     if not ms.token():
         nasiya.STORE.error = DAILY["error"] = "MOYSKLAD_TOKEN o'rnatilmagan (Render → Environment)"; return
     threading.Thread(target=loop, daemon=True).start()
+    log(f"fon ishi boshlandi (pid {os.getpid()})")
 
 
-start()
+# gunicorn ostida fon ishi worker ichida gunicorn.conf.py (post_fork) orqali boshlanadi;
+# oddiy "python app.py" da shu yerda boshlanadi.
+if "gunicorn" not in sys.modules:
+    start()
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))

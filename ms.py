@@ -14,21 +14,24 @@ def token():
 
 
 def get(path, params=None):
-    for i in range(6):
+    """MoySklad so'rovi; cheklov (429) yoki server xatosida kutib qayta urinadi."""
+    last = ""
+    for i in range(12):
         try:
             r = _S.get(B + path, params=params, timeout=120,
                        headers={"Authorization": "Bearer " + token()})
-            if r.status_code == 429:
-                time.sleep(2 + i * 2); continue
-            if r.status_code >= 500:
-                time.sleep(3); continue
+            if r.status_code == 429 or r.status_code >= 500:
+                last = f"{r.status_code}"
+                wait = r.headers.get("X-Lognex-Retry-After")
+                time.sleep(min(int(wait) / 1000 + 1, 20) if wait and wait.isdigit() else min(3 + i * 2, 20))
+                continue
             if not r.ok:
                 raise RuntimeError(f"MoySklad {r.status_code}: {r.text[:200]}")
             return r.json()
-        except requests.RequestException:
-            if i == 5: raise
-            time.sleep(3)
-    raise RuntimeError("MoySklad javob bermadi")
+        except requests.RequestException as e:
+            last = str(e)[:80]
+            time.sleep(min(3 + i * 2, 20))
+    raise RuntimeError("MoySklad javob bermadi: " + last)
 
 
 def all_rows(path, params=None, slim=None, page=1000):
